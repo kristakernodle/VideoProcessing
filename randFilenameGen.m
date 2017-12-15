@@ -11,8 +11,8 @@
 
 
 
-saveDir = '/Users/Krista/Desktop/'; % Where the '.csv' output will be saved
-n = 100000; % Number of filenames to generate
+saveDir = '/Users/kristakernodle/Desktop/'; % Where the '.csv' output will be saved
+n = 5; % Number of filenames to generate
 
 filenames = repmat({''},n,1); % Cell array to hold filenames
 
