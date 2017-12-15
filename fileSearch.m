@@ -6,7 +6,8 @@ searchDir = '/Volumes/HD_Krista/MouseReaching/AutoReaching_TestGroup/ReachingVid
 
 % Use this if you want to only search through folders after a specific date
 % (dates are the names of the folders in YYYYMMDD format)
-startDate = '';
+
+startDate = '20171213'; % IF YOU DON'T WANT TO USE THIS, SET TO 'NONE'
 
 mainDir = dir(searchDir);
 mainDirSubfolders = repmat({''},1);
@@ -21,8 +22,13 @@ for mainInd = 1:length(mainDir)
    
 end
 
+if strcmp(startDate,'NONE') == 0
+    startInd = find(contains(mainDirSubfolders,startDate));
+else
+    startInd = 1;
+end
 
-for subfolderInd = 1:length(mainDirSubfolders)
+for subfolderInd = startInd:length(mainDirSubfolders)
     folderDir = dir([searchDir mainDirSubfolders{subfolderInd,1}]);
     folderDirSubfolders = repmat({''},1);
     folderSubfolderInd = 1;
@@ -36,11 +42,14 @@ for subfolderInd = 1:length(mainDirSubfolders)
     end
     
     for subsubfolderInd = 1:length(folderDirSubfolders)
-        files = dir([searchDir mainDirSubfolders{subfolderInd,1} '/' folderDirSubfolders{subsubfolderInd,1} '/*mp4']);
         
-        %% Put what you want to do for each file here
-        % Individual files cann be found using files.name
+        files = dir([searchDir mainDirSubfolders{subfolderInd,1} '/' folderDirSubfolders{subsubfolderInd,1} '/*mp4']);
+                
+        for fileInd = 1:length(files)
+            
+            % Put what you want to do with each individual .mp4 file
+            
+        end
     end
         
-
 end
