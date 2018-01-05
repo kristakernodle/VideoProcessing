@@ -1,12 +1,12 @@
-%% Complete Processing
+%% Resizing Videos - For Habituation Days
 tic;
 
-searchDir = '/Volumes/HD_Krista/MouseReaching/AutoReaching_TestGroup/ReachingVideos_Date/';
+searchDir = '/Volumes/HD_Krista/MouseReaching/SkilledReaching_Winter2018/ReachingVideos/';
 
 % Use this if you want to only search through folders after a specific date
 % (dates are the names of the folders in YYYYMMDD format)
 
-startDate = '20171211'; % IF YOU DON'T WANT TO USE THIS, SET TO 'NONE'
+startDate = 'NONE'; % IF YOU DON'T WANT TO USE THIS, SET TO 'NONE'. Othewise the formate is YYYYMMDD
 
 mainDir = dir(searchDir);
 mainDirSubfolders = repmat({''},1);
@@ -76,58 +76,13 @@ for subfolderInd = startInd:length(mainDirSubfolders)
                  % resize
                  imageResized = imresize(image, 0.5);
                  
-                 bwVidFrame = rgb2gray(imageResized);
-                 binaryFrame = bwVidFrame >= 200;
-                 whitePix = sum(sum(binaryFrame(295:295+245,1:1+200)));
-                 
-                 if whitePix >= thresh && lightOn == 0
-                     
-                     lightOn = 1; % Declare that the light is on
-                     reachNum = reachNum + 1; % Define the reach number
-                     reaches(reachNum,1) = reachNum; % Save reach number
-                     reaches(reachNum,2) = i*(1/frameRate); % Save "time on" of LED
-                     i = i + floor(trialTime * frameRate);
-                     
-                     reachNumChar = num2str(reachNum);
-                     reachVideo = VideoWriter([searchDir mainDirSubfolders{subfolderInd,1} '/' folderDirSubfolders{subsubfolderInd,1} '/Reaches_' videoNum '/' filename '_s_' reachNum '.mp4'],'MPEG-4');
-                     
-                     reachVideo.Quality = 50;
-                     reachVideo.FrameRate = frameRate;
-                     reachFrame = im2frame(imageResized);
-                     open(reachVideo);
-                     writeVideo(reachVideo, reachFrame);
-                     
-                     % If the light is off
-                 elseif whitePix < thresh
-                     
-                     % If the light was previously on
-                     if lightOn == 1
-                         reaches(reachNum,3) = i*(1/frameRate); % Save "time off" of LED
-                         lightOn = 0; % Declare that the light is NOT on
-                         close(reachVideo); % Close the previous reaching video file
-                     end
-                     
-                     i = i + 1;
-                     
-                 else
-                     reachFrame = im2frame(imageResized);
-                     writeVideo(reachVideo, reachFrame);
-                     i = i + 1;
-                 end
-                 
-                 
                  % write image
                  resized_frame = im2frame(imageResized);
                  writeVideo(outVideo, resized_frame);
                  
              end
              
-             close(reachVideo);
              close(outVideo);
-             
-             % Add line to save reach timestamps
-             fid= [searchDir mainDirSubfolders{subfolderInd,1} '/' folderDirSubfolders{subsubfolderInd,1} '/Reaches_' videoNum '/' filename '_reaches.csv'];
-             csvwrite(fid,reaches)
              
         end
     end
