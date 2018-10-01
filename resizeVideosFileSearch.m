@@ -1,12 +1,12 @@
 %% Resizing Videos - For Habituation Days
 tic;
 
-searchDir = '/Volumes/HD_Krista/MouseReaching/SkilledReaching_Winter2018/ReachingVideos/';
+searchDir = '/Volumes/HD_Krista/MouseReaching/Pilot_Spring2017/ReachingVideos_Date/';
 
 % Use this if you want to only search through folders after a specific date
 % (dates are the names of the folders in YYYYMMDD format)
 
-startDate = 'NONE'; % IF YOU DON'T WANT TO USE THIS, SET TO 'NONE'. Othewise the formate is YYYYMMDD
+startDate = '20170703'; % IF YOU DON'T WANT TO USE THIS, SET TO 'NONE'. Othewise the formate is YYYYMMDD
 
 mainDir = dir(searchDir);
 mainDirSubfolders = repmat({''},1);

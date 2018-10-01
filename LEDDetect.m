@@ -1,3 +1,5 @@
+function LEDDetection(filename)
+
 %% LED Detection Script
 % The purpose of this script is to detect when an LED is turned on in a
 % video frame, save the timestamp associated with the first frame it is on
@@ -6,7 +8,7 @@
 
 % Define Directory
 % directory = '/Users/kristakernodle/Documents/GitHub/VideoProcessingMatlab';
-filename = '760_20180918_T4_01.mp4';
+% filename = '760_20180918_T4_01.mp4';
 
 % Define Output Variables
 reaches = zeros(100,3);
@@ -76,3 +78,5 @@ end
 toc;
 
 csvwrite('760_20180918_T4_01.csv',reaches);
+
+end

@@ -1,3 +1,5 @@
+function LEDDetection(file,outDir)
+
 %% LED Detection Script
 % The purpose of this script is to detect when an LED is turned on in a
 % video frame, save the timestamp associated with the first frame it is on
@@ -6,13 +8,17 @@
 
 % Define Directory
 % directory = '/Users/kristakernodle/Documents/GitHub/VideoProcessingMatlab';
-filename = '760_20180918_T4_01.mp4';
+% filename = '760_20180918_T4_01.mp4';
+
+[directory,filename,ext] = fileparts(file);
+
+filename = [filename ext];
 
 % Define Output Variables
 reaches = zeros(100,3);
 
 % Import video
-obj = VideoReader(filename);
+obj = VideoReader(file);
 
 frameRate = obj.FrameRate; % Get frame rate
 videoDuration = obj.Duration; % Get video duration
@@ -24,7 +30,7 @@ lightOn = 0;
 trialTime = 10;
 intTrialInt = 2;
 
-thresh = 5000;
+% thresh = 5000;
 tic;
 while time <= videoDuration
     
@@ -43,13 +49,16 @@ while time <= videoDuration
     end
 
     % Detect if LED is on or off
-    bwVidFrame = rgb2gray(vidFrame);
-    binaryFrame = bwVidFrame >= 200;
+    blueFrame = vidFrame(:,:,3);
 
-    whitePix = sum(sum(binaryFrame(ymin:ymin+height,xmin:xmin+width)));
+    bluePix = sum(sum(blueFrame(ymin:ymin+height,xmin:xmin+width)));
+    
+    if time < 1 && strcmp(filename(end-5:end-4),'01')
+        base = bluePix;
+    end
     
     % If the light was previous off but is now on
-    if whitePix >= thresh && lightOn == 0 && time > 7
+    if bluePix >= base+1000 && lightOn == 0
             
             lightOn = 1; % Declare that the light is on
             reachNum = reachNum + 1; % Define the reach number
@@ -58,21 +67,33 @@ while time <= videoDuration
             time = time + trialTime - (2/frameRate);
     
     % If the light is off
-    elseif whitePix < thresh
+    elseif bluePix < base+1000
         
         % If the light was previously on
         if lightOn == 1
-             reaches(reachNum,3) = obj.CurrentTime; % Save "time off" of LED
+             reaches(reachNum,3) = time + 5; % Save "time off" of LED
              time = time + (800/frameRate); % Skip forward ~15 seconds
         end
         
         lightOn = 0; % Declare that the light is NOT on
         time = time + (50/frameRate);
     else
-        time = time + (25/frameRate);
+        time = time + (100/frameRate);
     end
         
 end
 toc;
 
-csvwrite('760_20180918_T4_01.csv',reaches);
+movefile(file, outDir)
+
+if reaches(reachNum,3) == 0
+    reaches(reachNum,3) = videoDuration;
+end
+
+reaches(:,2) = floor(reaches(:,2));
+reaches(:,3) = ceil(reaches(:,3)) + 5;
+
+csvname = filename(1:end-4);
+csvwrite([outDir csvname '.csv'],reaches);
+
+end

@@ -1,8 +1,6 @@
 %% Video Editing: Resizing and LED Detection
 
-tic;
-
-inputDir = '/Volumes/HD_Krista/MouseReaching/AutoReaching_TestGroup/TestVideosInput/';
+inputDir = '/Volumes/HD_Krista/MouseReaching/SkilledReaching_Winter2018/ReachingVideos/';
 outputDir = '/Volumes/HD_Krista/MouseReaching/AutoReaching_TestGroup/TestVideosOutput/';
 
 videoNames = {};
@@ -19,12 +17,12 @@ for vidInd = 1:length(videoNames)
     inVideoFile = videoNames{vidInd};
     inVideoName = inVideoFile(1:end-4);
     outVideoName = [inVideoName '_s'];
-    filetype = '.mp4';
+    filetype = inVideoFile(end-4:end);
 
     inVideo = VideoReader([inputDir inVideoName filetype]);
     outVideo = VideoWriter([outputDir outVideoName filetype], 'MPEG-4');
-
-    toc; 
+    
+    disp([inVideoFile, ' start']);
 
     reachNum = 0;
     lightOn = 0;
@@ -40,8 +38,6 @@ for vidInd = 1:length(videoNames)
     outVideo.Quality = 50;
     outVideo.FrameRate = frameRate;
     open(outVideo);
-
-    toc;
 
     while i <= totalFrames
 
@@ -93,12 +89,12 @@ for vidInd = 1:length(videoNames)
         % write image
         resized_frame = im2frame(imageResized);
         writeVideo(outVideo, resized_frame);
+        
+        disp([inVideoFile, ' end']);
 
     end
 
-toc;
 close(reachVideo);
 close(outVideo);
 
 end
-toc;
