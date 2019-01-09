@@ -11,6 +11,8 @@
 %
 %   transDir - Directory of the .mat file containing translated names and
 %       original names
+%   transName - name of the .mat file containing translated names and
+%       original names
 %   inDir - Directory of all files that need renaming
 %   inDirWant - Common aspect of all folder names in the inDir
 %   subDir - Commonly named folder for all folders in the inDir
@@ -18,10 +20,14 @@
 %   finFoldWant - Common aspect of all folder names that contain files to
 %       be renamed
 %   filenameStruct - Commonly formatted names of all files to be renamed
+%   outDir - Directory all renamed files will be copied to
 %
 %   NOTE: This code assumes that a .mat file already exists.  
 %
 % Outputs:
+%   All copied files (located in outDir)
+%   Updated .mat file with all original and new filenames
+%
 
 %% Inputs
 transDir = '/Volumes/HD_Krista/Experiments/SkilledReachingExperiments/SR_DlxCKO_BehOnly/VideoPipeline/';
@@ -32,6 +38,7 @@ subDir = '/Training/';
 subDirWant = 'CC';
 finFoldWant = 'Reach';
 filenameStruct = '/*_*_*_*.MP4';
+outDir = '/Volumes/Krista_BUHD/Scoring/';
 
 %% Initiate Variables
 wantFolders = [];
@@ -40,8 +47,8 @@ uniqOrigNames = [];
 
 %% Import .mat
 transFile = load([transDir,transName]);
-long = transFile.OriginalNames;
-short = transFile.NewNames;
+allOrigName = transFile.allOrigName;
+allNewName = transFile.allNewName;
 
 %% First Level of Folders
 % wantFolders
@@ -128,13 +135,13 @@ for jj = 1:length(wantFolders)
             %% Generate New Names
             
             % Check for uniqueness of origName (not previously translated)
-            if ~any(strcmp(origName,long))
+            if ~any(strcmp(origName,allOrigName))
                 
                 % For unique origName, generate newName
                 newName = randFilenameGen();
                 
                 % Check uniqueness of newName
-                while (any(strcmp(newName,short))) || (strcmp(newName,allNewNames))
+                while (any(strcmp(newName,allNewName))) || (strcmp(newName,allNewNames))
                     disp('in loop');
                     newName = randFilenameGen();
                 end
@@ -151,6 +158,29 @@ for jj = 1:length(wantFolders)
                 % If not unique, continue to next file
                 continue
             end % Check Uniqueness (Generate New Names)
+            
+            %% Change Filename and Move File
+            
+            % First create the new folder, if necessary.
+            outputFolder = fullfile(outDir,newName);
+            if ~exist(outputFolder, 'dir')
+              mkdir(outputFolder);
+            end
+            
+            % Copy the files over with a new name.
+            fileNames = { allFiles.name };
+            for jlni = 1 : length(allFiles)
+              thisFileName = fileNames{jlni};
+              split2 = strsplit(thisFileName,'_');
+              % Prepare the input filename.
+              inputFullFileName = strcat(reachDir,'/',char(wantReachFolders(jln)),'/',thisFileName);
+              % Prepare the output filename.
+              outputBaseFileName = sprintf('%s_%s', newName, string(split2(end)));
+              outputFullFileName = fullfile(outputFolder, outputBaseFileName);
+              % Do the copying and renaming all at once.
+              copyfile(inputFullFileName, outputFullFileName);
+            end
+            
   
         end % Get all files in reachDir that can be translated
         
@@ -163,16 +193,20 @@ end % Second level of folders
 % Convert character arrays uniqOrigNames & allNewNames to strings
 uniqOrigNames = string(uniqOrigNames);
 allNewNames = string(allNewNames);
+allOrigName = string(allOrigName);
+allNewName = string(allNewName);
 
 % Concatenate into one variable (transFile)
-startRowCt = length(long)+1;
-endRowCt = length(long)+length(uniqOrigNames);
-OriginalNames(startRowCt:endRowCt,1) = uniqOrigNames;
-NewNames(startRowCt:endRowCt,2) = allNewNames;
+startRowCt = size(allOrigName,1)+1;
+endRowCt = size(allOrigName,1)+length(uniqOrigNames);
+allOrigName(1:startRowCt-1,1) = allOrigName;
+allOrigName(startRowCt:endRowCt,1) = uniqOrigNames;
+allNewName(1:startRowCt-1,1) = allNewName;
+allNewName(startRowCt:endRowCt,1) = allNewNames;
 
 % Save new transFile as .mat, overwritting old variables
 
-save([transDir,transName],OriginalNames,NewNames);
+save '/Volumes/HD_Krista/Experiments/SkilledReachingExperiments/SR_DlxCKO_BehOnly/VideoPipeline/translate.mat' allOrigName allNewName
 
 
 
