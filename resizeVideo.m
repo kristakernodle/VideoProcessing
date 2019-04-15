@@ -12,10 +12,10 @@
 %                filename_s.mp4
 
 
-inFileDir = '/Users/kristakernodle/Desktop';
-outFileDir = '/Users/kristakernodle/Desktop';
+inFileDir = '/Volumes/HD_Krista/MouseReaching/Pilot_Spring2017/ReachingVideos_Date/20170628/Train_6989_12/';
+outFileDir = '/Volumes/HD_Krista/MouseReaching/Pilot_Spring2017/ReachingVideos_Date/20170628/Train_6989_12/';
 
-filename = 'ET_YYYYMMDD_0#';
+filename = '6989_20170628_01';
 
 input = VideoReader([inFileDir filename '.mp4']);
 output = VideoWriter([outFileDir filename '_s.mp4'], 'MPEG-4');

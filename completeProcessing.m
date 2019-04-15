@@ -1,12 +1,11 @@
 %% Complete Processing
-tic;
 
-searchDir = '/Volumes/HD_Krista/MouseReaching/AutoReaching_TestGroup/ReachingVideos_Date/';
+searchDir = '/Volumes/HD_Krista/MouseReaching/SkilledReaching_Winter2018/ReachingVideos/';
 
 % Use this if you want to only search through folders after a specific date
 % (dates are the names of the folders in YYYYMMDD format)
 
-startDate = '20171213'; % IF YOU DON'T WANT TO USE THIS, SET TO 'NONE'
+startDate = '20180108'; % IF YOU DON'T WANT TO USE THIS, SET TO 'NONE'
 
 mainDir = dir(searchDir);
 mainDirSubfolders = repmat({''},1);
@@ -50,8 +49,10 @@ for subfolderInd = startInd:length(mainDirSubfolders)
             filename = filenameExt(1:end-4);
             videoNum = filename(end-2:end);
             
-            inVideo = videoReader([searchDir mainDirSubfolders{subfolderInd,1} '/' folderDirSubfolders{subsubfolderInd,1} '/' filenameExt]);
-            outVideo = videoWriter([searchDir mainDirSubfolders{subfolderInd,1} '/' folderDirSubfolders{subsubfolderInd,1} '/' filename '_s.mp4']);
+            disp([searchDir mainDirSubfolders{subfolderInd,1} '/' folderDirSubfolders{subsubfolderInd,1} '/' filenameExt, ' start']);
+            
+            inVideo = VideoReader([searchDir mainDirSubfolders{subfolderInd,1} '/' folderDirSubfolders{subsubfolderInd,1} '/' filenameExt]);
+            outVideo = VideoWriter([searchDir mainDirSubfolders{subfolderInd,1} '/' folderDirSubfolders{subsubfolderInd,1} '/' filename '_s.mp4'],'MPEG-4');
             mkdir([searchDir mainDirSubfolders{subfolderInd,1} '/' folderDirSubfolders{subsubfolderInd,1} '/Reaches_' videoNum])
             
             reachNum = 0;
@@ -69,7 +70,7 @@ for subfolderInd = startInd:length(mainDirSubfolders)
             outVideo.FrameRate = frameRate;
             open(outVideo);
             
-             while i <= totalFrames
+             while i < totalFrames
                  
                  image = read(inVideo, i);
                  
@@ -128,6 +129,8 @@ for subfolderInd = startInd:length(mainDirSubfolders)
              % Add line to save reach timestamps
              fid= [searchDir mainDirSubfolders{subfolderInd,1} '/' folderDirSubfolders{subsubfolderInd,1} '/Reaches_' videoNum '/' filename '_reaches.csv'];
              csvwrite(fid,reaches)
+             
+             disp([searchDir mainDirSubfolders{subfolderInd,1} '/' folderDirSubfolders{subsubfolderInd,1} '/' filenameExt, ' end']);
              
         end
     end
