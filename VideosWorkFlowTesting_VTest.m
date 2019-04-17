@@ -16,7 +16,7 @@ tic;
 %% Step One: Check if there are any video files ready for processing
 
 % Define the folder that videos ready for processing can be found
-readyDir = '/Volumes/HD_Krista/Experiments/SkilledReachingExperiments/SR_DlxCKO_BehOnly/VideoPipeline/ReDoLED/';
+readyDir = '/Volumes/HD_Krista/Experiments/SkilledReachingExperiments/SR_DlxCKO_BehOnly/VideoPipeline/FindLED/';
 
 % Find files that are ready for processing. Only videos with names and
 % filetypes matching the following format will be identified:
@@ -71,7 +71,7 @@ for vidNum = 1:a
     if contains(readyFiles(vidNum).name, {'._'})
         continue;
     else
-        [base,reaches] = LEDDetection2([readyDir readyFiles(vidNum).name],outDir,base);
+        [base,reaches] = LEDDetection([readyDir readyFiles(vidNum).name],outDir,base);
     end
 end
 

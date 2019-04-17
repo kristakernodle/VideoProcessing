@@ -32,11 +32,15 @@ intTrialInt = 1;
 
 % thresh = 5000;
 tic;
-while time <= videoDuration
+while time < videoDuration
     
     obj.CurrentTime = time;
     
-    vidFrame = readFrame(obj);
+    if obj.CurrentTime >= videoDuration-8
+        time = videoDuration;
+        break
+    end
+        vidFrame = readFrame(obj);
 
     % At the beginning of the video, define where the LED is
         xmin = 1;
@@ -71,7 +75,7 @@ while time <= videoDuration
     % If the light is off
     elseif whitePix < 24000
         
-        if lightOn == 1
+        if lightOn == 1 && time
              time = time + 8; % Skip forward 1 frame
              lightOn = 0;
         else
