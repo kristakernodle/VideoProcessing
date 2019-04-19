@@ -77,10 +77,10 @@ for animal in allAnimals:
                         
                         for reachVid in openCSV:
                             reachVid=reachVid.split(',')
-                            if reachVid[0] != 0:
+                            if int(reachVid[0]) != 0:
                                 startTime=float(reachVid[1])
                                 if len(reachVid) == 2:
-                                    endTime=startTime+16
+                                    endTime=startTime+17
                                 else:
                                     endTime=float(reachVid[2])
                                 
@@ -89,7 +89,7 @@ for animal in allAnimals:
                                 else:
                                     vidNum = reachVid[0]
                                 
-                                ffmpeg_extract_subclip(currDayDir + '/' + vid, startTime, endTime, targetname = outDir +'/' + fname + 'R' + vidNum + '.mp4')
+                                ffmpeg_extract_subclip(currDayDir + '/' + vid, startTime, endTime, targetname = outDir +'/' + fname + '_R' + vidNum + '.mp4')
                     
                     else:
                         continue
