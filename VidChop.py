@@ -5,10 +5,10 @@ Created on Thu Sep 27 13:18:39 2018
 
 @author: kkrista
 """
+
 # Get filenames for all .csv files & all .mp4 files
-import glob, os
-import numpy as np
-#from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
+import os
+from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 
 # Define animal directory
 animalDir = '/Volumes/HD_Krista/Experiments/SkilledReachingExperiments/SR_DlxCKO_BehOnly/Animals/'
@@ -51,7 +51,7 @@ for animal in allAnimals:
         # If videos have already been processed OR if LED detection hasn't been performed, skip this training day
         if len(existingReachDir) is len(vidFiles):
             continue
-        elif len(csvFiles) is 0:
+        elif len(csvFiles) == 0:
             continue
         
         # Cycle through csvFiles and vidFiles
@@ -63,52 +63,34 @@ for animal in allAnimals:
             fname = vid.strip('.MP4')
             
             for csv in csvFiles:
-                if (fname in csv) and (len(fname) is len(csv.strip('.csv'))) and ('Reaches'+ fname[-2:] not in existingReachDir):
-                    # Load csv file
+                if (fname in csv) and (len(fname) is len(csv.strip('.csv'))):
                     
-                    
+                    outDir=currDayDir + '/Reaches' + fname[-2:]
                     # Make output directory
-                    outDir=currDayDir + '/Reaches' + fname[-2]
-                    os.makedirs(outDir)
+                    if ('Reaches'+ fname[-2:] not in existingReachDir):
+                        os.makedirs(outDir)
                     
-                    # Load csv file
+                    if not (os.listdir(currDayDir + '/' +'Reaches'+ fname[-2:])):
+                        # Load csv file
+                        with open(currDayDir + '/' + csv) as f:
+                            openCSV = f.read().splitlines()
+                        
+                        for reachVid in openCSV:
+                            reachVid=reachVid.split(',')
+                            if reachVid[0] != 0:
+                                startTime=float(reachVid[1])
+                                if len(reachVid) == 2:
+                                    endTime=startTime+16
+                                else:
+                                    endTime=float(reachVid[2])
+                                
+                                if len(reachVid[0]) == 1:
+                                    vidNum = '0' + reachVid[0]
+                                else:
+                                    vidNum = reachVid[0]
+                                
+                                ffmpeg_extract_subclip(currDayDir + '/' + vid, startTime, endTime, targetname = outDir +'/' + fname + 'R' + vidNum + '.mp4')
                     
-                else:
-                    continue
+                    else:
+                        continue
                 
-        
-        
-        
-#
-                    
-                
-## Begin loop for each video
-#for item in range(len(csvs)):
-#    
-#    # Get video information into useable variables
-#    filename = csvs[item].strip(('./' '.csv'))
-#    splitName = filename.split("_")
-#    eT = splitName[0]
-#    date = splitName[1]
-#    CC = splitName[2]
-#    vidNum = splitName[3]
-#    
-#    # Define the output directory
-#    
-#    outDir = '/Volumes/HD_Krista/Experiments/SkilledReachingExperiments/SR_DlxCKO_BehOnly/VideoPipeline/Cut/' + eT + '/' + eT + '_' + date + '_' + CC + '/Reaches' + vidNum
-#    os.makedirs(outDir)
-#    
-#    # Import .csv files
-#    allReaches = np.genfromtxt(csvs[item], delimiter=',')
-#    
-#    cnt = 1
-#    
-#    # Iterate over number of reaches
-#    for reach in allReaches:
-#        if reach[0] != 0:                    
-#            ffmpeg_extract_subclip('/Volumes/HD_Krista/Experiments/SkilledReachingExperiments/SR_DlxCKO_BehOnly/VideoPipeline/ToBeCut/' + eT + '_' + date + '_' + CC + '_' + vidNum + '.MP4', reach[1]+1, reach[1]+17, targetname = outDir + '/' + eT + '_' + date + '_' + vidNum + '_R' + str(cnt) + '.MP4')
-#            cnt = cnt + 1
-#            
-#    # Move completed files (csv & MP4) to the "Cut" directory
-#    os.rename('/Volumes/HD_Krista/Experiments/SkilledReachingExperiments/SR_DlxCKO_BehOnly/VideoPipeline/ToBeCut/' + eT + '_' + date + '_' + CC + '_' + vidNum + '.MP4','/Volumes/HD_Krista/Experiments/SkilledReachingExperiments/SR_DlxCKO_BehOnly/VideoPipeline/Cut/' + eT + '/' + eT + '_' + date + '_' + CC + '/' + eT + '_' + date + '_' + CC + '_' + vidNum + '.MP4')
-#    os.rename('/Volumes/HD_Krista/Experiments/SkilledReachingExperiments/SR_DlxCKO_BehOnly/VideoPipeline/ToBeCut/' + eT + '_' + date + '_' + CC + '_' + vidNum + '.csv','/Volumes/HD_Krista/Experiments/SkilledReachingExperiments/SR_DlxCKO_BehOnly/VideoPipeline/Cut/' + eT + '/' + eT + '_' + date + '_' + CC + '/' + eT + '_' + date + '_' + CC + '_' + vidNum + '.csv')
