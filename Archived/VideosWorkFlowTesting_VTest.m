@@ -27,38 +27,6 @@ readyFiles = dir(strcat(readyDir, '*_*_*_*.MP4'));
 % value 'a' gives # of files
 [a,b] = size(readyFiles);
 
-%% Step Two: Resize videos
-% tic;
-% % Define the output directory
-% outDir = '/Users/kkrista/Desktop/Test_WorkFlowEnd/';
-% 
-% for vidNum = 1:a
-%     
-%     outVid = [outDir readyFiles(vidNum).name];
-%     
-%     input = VideoReader([readyDir readyFiles(vidNum).name]);
-%     output = VideoWriter(outVid, 'MPEG-4'); 
-%     
-%     output.Quality = 50;
-%     output.FrameRate = input.FrameRate;
-%     open(output);
-%     
-%     while hasFrame(input)
-%        
-%         vidFrame = readFrame(input);
-%        
-%        imageData = imresize(vidFrame, 0.5);
-%     
-%         % write image
-%         resized_frame = im2frame(imageData);
-%         writeVideo(output, resized_frame);
-%         
-%     end
-%     
-%     close(output);
-%     
-% end
-% toc
 
 %% Step Three: Cut resized video into trials
 
