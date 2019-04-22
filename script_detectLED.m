@@ -35,6 +35,7 @@ for ii = 1:length(allFolders)
                 if contains(mp4Files(nn), '._')
                     continue;
                 else
+                    disp(['working on file: ' mp4Files{nn}]);
                     LEDDetect([trainingDir trainFolders{jj} '/' mp4Files{nn}]);
                 end
             end
@@ -55,6 +56,7 @@ for ii = 1:length(allFolders)
                             disp('this file has a ._ in it');
                             continue;
                         else
+                            disp(['working on file: ' mp4Files{nn}]);
                             LEDDetect([trainingDir trainFolders{jj} '/' mp4Files{nn}]);
                         end
                     end
