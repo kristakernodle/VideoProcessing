@@ -30,38 +30,48 @@ for ii = 1:length(allFolders)
         mp4Files=getNames_contain([trainingDir trainFolders{jj}],0,'.MP4');
         csvFiles=getNames_contain([trainingDir trainFolders{jj}],0,'.csv');
         
+        % If there are no csv files:
         if isempty(csvFiles)
+            
             for nn = 1:length(mp4Files)
+                
+                % Sort out videos that have '._', LEDDetect the rest
                 if contains(mp4Files(nn), '._')
                     continue;
                 else
-                    disp(['working on file: ' mp4Files{nn}]);
-                    LEDDetect([trainingDir trainFolders{jj} '/' mp4Files{nn}]);
+                    disp(['Working on: ' mp4Files{nn}]);
+                    fileName=[trainingDir trainFolders{jj} '/' mp4Files{nn}];
+                    LEDDetect(fileName);
                 end
+                
             end
+            
+        % If there are csv files:
         else
-            for kk = 1:length(csvFiles)
-
-                if contains(csvFiles(kk),'._')
+            
+            for nn=1:length(mp4Files)
+                
+                split=strsplit(mp4Files{nn},'.');
+                
+                % Sort out videos that have already been analyzed
+                if any(contains(csvFiles,split{1}))
                     continue;
-                end
-
-                csvNameParts=strsplit(csvFiles{kk},'.csv');
-
-                for nn = 1:length(mp4Files)
-                    if contains(mp4Files(nn),csvNameParts{1})
+                else
+                    
+                    % Sort out videos that have '._', LEDDetect the rest
+                    if contains(mp4Files(nn),'._')
+                        disp('this file has a ._ in it');
                         continue;
                     else
-                        if contains(mp4Files(nn),'._')
-                            disp('this file has a ._ in it');
-                            continue;
-                        else
-                            disp(['working on file: ' mp4Files{nn}]);
-                            LEDDetect([trainingDir trainFolders{jj} '/' mp4Files{nn}]);
-                        end
+                        disp(['Working on: ' mp4Files{nn}]);
+                        fileName=[trainingDir trainFolders{jj} '/' mp4Files{nn}];
+                        LEDDetect(fileName);
                     end
+                    
                 end
+                
             end
+
         end
          
     end % end processing one training day at a time
