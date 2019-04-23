@@ -39,12 +39,19 @@ while hasFrame(obj)
     bluePix=sum(sum(vidFrame(:,:,3)>250));
     
     % If the light is on, was previously off, & time is past the ID card
-    if bluePix >= thresh && lightOn == 0 && time >7
+    if bluePix >= thresh && lightOn == 0
+        
         lightOn = 1; % Declare that the light is on
         reachNum = reachNum + 1; % Define the reach number
         reaches(reachNum,1) = reachNum; % Save reach number
         reaches(reachNum,2) = time;
-        obj.CurrentTime=time+10;
+        
+        if time+10 < obj.Duration
+            obj.CurrentTime=time+10;
+        else 
+            obj.CurrentTime=obj.Duration;
+        end
+        
     % If the light is off
     elseif bluePix < thresh && lightOn ==1
         reaches(reachNum,3) = time; % Save "time off" of LED
