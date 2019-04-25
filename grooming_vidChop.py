@@ -5,9 +5,13 @@ grooming_vidChop.py
 
 Cuts videos based on start and stop times identified in csv files. 
 
+CSV files must have the following structure:
+    | start mins | start secs | end mins | end secs |
+
 Created on Thu Apr 25 2019
 Author: Krista Kernodle
 '''
+
 # USER DEFINED VARIABLES
 animalDir = '/Volumes/HD_Krista/Grooming_Data/'
 
