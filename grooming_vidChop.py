@@ -60,7 +60,7 @@ for animal in animalFolders:
 
             for times in csv:
 
-                vidNum =+ 1
+                vidNum += 1
 
                 if vidNum < 10:
                     indexVar = '0'+str(vidNum)
@@ -83,6 +83,8 @@ for animal in animalFolders:
 
                 # Cut Video
                 ffmpeg_extract_subclip(fullVidDir, startTime, endTime, targetname = outFile)
+        
+        # If the video doesn't have a csv file OR if the cut directory already exists    
         else:
             continue
 
