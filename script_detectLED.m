@@ -5,7 +5,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % USER DEFINED VARIABLES
-animalDir = '/Volumes/HD_Krista/Experiments/SkilledReachingExperiments/SR_DlxCKO_BehOnly/Animals/';
+animalDir = '/Volumes/HD_Krista/Experiments/skilledReaching/SR_DlxCKO_BehOnly/Animals/';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -41,7 +41,8 @@ for ii = 1:length(allFolders)
                 else
                     disp(['Working on: ' mp4Files{nn}]);
                     fileName=[trainingDir trainFolders{jj} '/' mp4Files{nn}];
-                    LEDDetect(fileName);
+                    reaches=LEDDetect(fileName);
+                    disp('pause here');
                 end
                 
             end
@@ -65,7 +66,8 @@ for ii = 1:length(allFolders)
                     else
                         disp(['Working on: ' mp4Files{nn}]);
                         fileName=[trainingDir trainFolders{jj} '/' mp4Files{nn}];
-                        LEDDetect(fileName);
+                        reaches=LEDDetect(fileName);
+                        disp('pause here');
                     end
                     
                 end
