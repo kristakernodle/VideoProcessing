@@ -13,10 +13,11 @@ Author: Krista Kernodle
 '''
 
 # USER DEFINED VARIABLES
-animalDir = '/Volumes/HD_Krista/Grooming_Data/'
+animalDir = '/Volumes/HD_Krista/Experiments/groomingExp/'
 
 
 # Required Packages & Functions:
+import sys
 import os
 import setDLCFunc
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
@@ -57,6 +58,9 @@ for animal in animalFolders:
 
         # If the video has a csv file associated with it and was not previously cut
         if (filename + '.csv' in csvFiles) and (filename + '_cut' not in existingDir):
+            
+            print(filename,end='\n')
+            
             # Read in the csv file
             csv = setDLCFunc.readfile(filename+'.csv')
 
@@ -73,6 +77,10 @@ for animal in animalFolders:
                 
                 # Get start and end times
                 times = times.split(',')
+
+                if '\ufeff8' in times[0]:
+                    continue
+                
                 startTime = int(times[0]) * 60 + int(times[1])
                 endTime = int(times[2]) * 60 + int(times[3])
 

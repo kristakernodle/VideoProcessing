@@ -11,11 +11,10 @@ import os
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 
 # Define animal directory
-animalDir = '/Volumes/HD_Krista/Experiments/SkilledReachingExperiments/SR_DlxCKO_BehOnly/Animals/'
+animalDir = '/Volumes/HD_Krista/Experiments/skilledReaching/SR_DlxCKO_BehOnly/Animals/'
 
 # Initialize Variables
 allAnimals=[]
-
 allFolders = os.listdir(animalDir)
 
 # Get all animal folders
@@ -48,17 +47,17 @@ for animal in allAnimals:
         csvFiles=[file for file in allFiles if file.endswith('.csv')]
         existingReachDir=[file for file in allFiles if 'Reaches' in file]
         
-        # If videos have already been processed OR if LED detection hasn't been performed, skip this training day
-        if len(existingReachDir) is len(vidFiles):
-            continue
-        elif len(csvFiles) == 0:
+        # If LED detection hasn't been performed, skip this training day
+        if len(csvFiles) == 0:
             continue
         
         # Cycle through csvFiles and vidFiles
         for vid in vidFiles:
             
+            # If vid is an open file (._) or not a video, skip
             if ('._' in vid) or ('.MP4' not in vid):
                 continue
+            
             
             fname = vid.strip('.MP4')
             

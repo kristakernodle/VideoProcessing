@@ -51,7 +51,7 @@ while hasFrame(obj)
         reaches(reachNum,1) = reachNum; % Save reach number
         reaches(reachNum,2) = time;
         
-        if time+10 < obj.Duration
+        if time+17 < obj.Duration
             obj.CurrentTime=time+17;
         else 
             obj.CurrentTime=obj.Duration;
