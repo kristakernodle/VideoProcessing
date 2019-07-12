@@ -6,9 +6,9 @@ Created on Thu Sep 27 13:18:39 2018
 @author: kkrista
 """
 
-# Get filenames for all .csv files & all .mp4 files
 import os
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
+import LEDDetection
 
 # Define animal directory
 animalDir = '/Volumes/SharedX/Neuro-Leventhal/data/mouseSkilledReaching/'
@@ -36,6 +36,7 @@ for animal in allAnimals:
     # Loop through training days
     for day in allTrainDays:
         
+        # Skip .MP4 files in allTrainDays
         if ('.MP4' in day):
             continue
         
@@ -49,7 +50,7 @@ for animal in allAnimals:
         
         # If LED detection hasn't been performed, perform the LED Detection
         if len(csvFiles) == 0:
-            
+            csvFiles = LEDDetection.LEDDetection(currDayDir,vidFiles)
         
         # Cycle through csvFiles and vidFiles
         for vid in vidFiles:
