@@ -54,7 +54,7 @@ def LEDDetection(currDayDir,vidFiles):
         for ts in range(0,len(timestamps)):
             file.write('%d\n' %timestamps[ts])   
         file.close()
-        csvFiles.append(currDayDir+filename+'.csv')
+        csvFiles.append(filename+'.csv')
         
     return csvFiles
 

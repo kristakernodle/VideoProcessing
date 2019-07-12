@@ -74,22 +74,19 @@ for animal in allAnimals:
                         # Load csv file
                         with open(currDayDir + '/' + csv) as f:
                             openCSV = f.read().splitlines()
-                        
+                    
+                        vidCnt=0
                         for reachVid in openCSV:
-                            reachVid=reachVid.split(',')
-                            if int(reachVid[0]) != 0:
-                                startTime=float(reachVid[1])
-                                if len(reachVid) == 2:
-                                    endTime=startTime+17
-                                else:
-                                    endTime=float(reachVid[2])
-                                
-                                if len(reachVid[0]) == 1:
-                                    vidNum = '0' + reachVid[0]
-                                else:
-                                    vidNum = reachVid[0]
-                                
-                                ffmpeg_extract_subclip(currDayDir + '/' + vid, startTime, endTime, targetname = outDir +'/' + fname + '_R' + vidNum + '.mp4')
+                            startTime=int(readVid)
+                            endTime=startTime+17
+                            vidCnt += 1
+                            
+                            if len(vidCnt)<2:
+                                vidNum = '0' + str(vidCnt)
+                            else:
+                                vidNum=str(vidCnt)
+                            
+                            ffmpeg_extract_subclip(currDayDir + '/' + vid, startTime, endTime, targetname = outDir +'/' + fname + '_R' + vidNum + '.mp4')
                     
                     else:
                         continue
