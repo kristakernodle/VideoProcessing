@@ -5,7 +5,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % USER DEFINED VARIABLES
-animalDir = '/Volumes/HD_Krista/Experiments/skilledReaching/SR_DlxCKO_BehOnly/Animals/';
+animalDir = '/Volumes/SharedX/Neuro-Leventhal/data/mouseSkilledReaching/';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
