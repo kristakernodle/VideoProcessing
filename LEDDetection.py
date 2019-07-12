@@ -16,8 +16,9 @@ def LEDDetection(currDayDir,vidFiles):
     csvFiles=[]
     
     for vid in vidFiles:
-    
-        cap = cv2.VideoCapture(currDayDir+vid)
+
+        print(currDayDir+vid)    
+        cap = cv2.VideoCapture(currDayDir+'/'+vid)
         frameCnt=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         fps=int(cap.get(cv2.CAP_PROP_FPS))
     
@@ -49,7 +50,7 @@ def LEDDetection(currDayDir,vidFiles):
             currTime=frameNum/fps
             
         filename=vid.strip('.MP4')
-        file=open(currDayDir+filename+'.csv','w+')
+        file=open(currDayDir+'/'+filename+'.csv','w+')
         for ts in range(0,len(timestamps)):
             file.write('%d\n' %timestamps[ts])   
         file.close()
