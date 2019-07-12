@@ -11,7 +11,7 @@ import os
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 
 # Define animal directory
-animalDir = '/Volumes/SharedX/Neuro-Leventhal/data/mouseSkilledReaching/'
+animalDir = '/Volumes/HD_Krista/Experiments/skilledReaching/SR_DlxCKO_BehOnly/Animals/'
 
 # Initialize Variables
 allAnimals=[]
@@ -47,9 +47,9 @@ for animal in allAnimals:
         csvFiles=[file for file in allFiles if file.endswith('.csv')]
         existingReachDir=[file for file in allFiles if 'Reaches' in file]
         
-        # If LED detection hasn't been performed, perform the LED Detection
+        # If LED detection hasn't been performed, skip this training day
         if len(csvFiles) == 0:
-            
+            continue
         
         # Cycle through csvFiles and vidFiles
         for vid in vidFiles:
