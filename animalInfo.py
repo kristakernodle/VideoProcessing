@@ -16,3 +16,27 @@ right = ['710','713','717','719','764']
 
 WT = ['704','713','740','743','749','757','764','7081']
 KO = ['710','717','719','745']
+
+def pawPref(subj):
+    if subj in left:
+        return 'leftPP'
+    elif subj in right:
+        return 'rightPP'
+    else:
+        print('No paw preference found')
+        
+def boxID(subj):
+    if subj in box1:
+        return 'CC1'
+    elif subj in box2:
+        return 'CC2'
+    else:
+        print('No box ID found')
+        
+def genotype(subj):
+    if subj in WT:
+        return 'WT'
+    elif subj in KO:
+        return 'KO'
+    else:
+        print('Genotype not found')
