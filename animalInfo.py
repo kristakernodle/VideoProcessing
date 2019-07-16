@@ -19,17 +19,21 @@ KO = ['710','717','719','745']
 
 def pawPref(subj):
     if subj in left:
-        return 'leftPP'
+        pawPref = 'left'
+        nonPrefPaw = 'right'
+        return pawPref, nonPrefPaw
     elif subj in right:
-        return 'rightPP'
+        pawPref = 'right'
+        nonPrefPaw = 'left'
+        return pawPref, nonPrefPaw
     else:
         print('No paw preference found')
         
 def boxID(subj):
     if subj in box1:
-        return 'CC1'
+        return '1'
     elif subj in box2:
-        return 'CC2'
+        return '2'
     else:
         print('No box ID found')
         

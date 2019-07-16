@@ -7,10 +7,10 @@ Created on Fri Jul 12 14:22:14 2019
 """
 
 import os
-import cropFuncs
+import cropFuncs as cropFunc
 
-allSubjDir = '/Volumes/SharedX/Neuro-Leventhal/data/mouseSkilledReaching/'
-cropParamsDir = '/Users/Krista/Desktop/cropParams/'
+allSubjDir = '/media/kkrista/KRISTAEHD/DLCSR/20190712/'
+cropParamsDir = '/home/kkrista/Documents/SkilledReaching/cropParams/'
 
 CC1_directCrops = cropFunc.readfile(cropParamsDir + 'CC1_directCrops.csv')
 CC1_leftCrops = cropFunc.readfile(cropParamsDir + 'CC1_leftCrops.csv')
@@ -48,6 +48,7 @@ for subj in subjList:
 
             for trainDay in trainingDays:
                 # Walk through files and folders in training folder
+                print(trainDay)
                 if os.path.isdir(subjTrainDir + '/' + trainDay):
                     # If you have a training day directory
 
@@ -67,7 +68,7 @@ for subj in subjList:
                                     # Skip invisible files
                                     continue
 
-                                elif '.mp4' in vid:
+                                elif '.mp4' in vid or '.MP4' in vid:
                                     # Look at video files
 
                                     vidIdentifiers = vid.split('_')
@@ -114,12 +115,12 @@ for subj in subjList:
         # If you do not have a subject directory, move on
         continue                                    
 
-cropFunc.writeToCSV('/Users/Krista/Desktop/cropParams/CC1_directCrops.csv',CC1_directCrops)
-cropFunc.writeToCSV('/Users/Krista/Desktop/cropParams/CC1_leftCrops.csv',CC1_leftCrops)
-cropFunc.writeToCSV('/Users/Krista/Desktop/cropParams/CC1_rightCrops.csv',CC1_rightCrops)
-cropFunc.writeToCSV('/Users/Krista/Desktop/cropParams/CC2_directCrops.csv',CC2_directCrops)
-cropFunc.writeToCSV('/Users/Krista/Desktop/cropParams/CC2_leftCrops.csv',CC2_leftCrops)
-cropFunc.writeToCSV('/Users/Krista/Desktop/cropParams/CC2_rightCrops.csv',CC2_rightCrops)                                           
+cropFunc.writeToCSV(cropParamsDir + 'CC1_directCrops.csv',CC1_directCrops)
+cropFunc.writeToCSV(cropParamsDir + 'CC1_leftCrops.csv',CC1_leftCrops)
+cropFunc.writeToCSV(cropParamsDir + 'CC1_rightCrops.csv',CC1_rightCrops)
+cropFunc.writeToCSV(cropParamsDir + 'CC2_directCrops.csv',CC2_directCrops)
+cropFunc.writeToCSV(cropParamsDir + 'CC2_leftCrops.csv',CC2_leftCrops)
+cropFunc.writeToCSV(cropParamsDir + 'CC2_rightCrops.csv',CC2_rightCrops)                                           
                                     
                                     
                 
