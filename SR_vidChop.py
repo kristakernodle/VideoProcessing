@@ -77,11 +77,11 @@ for animal in allAnimals:
                     
                         vidCnt=0
                         for reachVid in openCSV:
-                            startTime=int(readVid)
+                            startTime=int(reachVid)
                             endTime=startTime+17
                             vidCnt += 1
                             
-                            if len(vidCnt)<2:
+                            if len(str(vidCnt))<2:
                                 vidNum = '0' + str(vidCnt)
                             else:
                                 vidNum=str(vidCnt)

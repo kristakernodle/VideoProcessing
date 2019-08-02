@@ -9,15 +9,13 @@ Created on Tue Feb  5 15:39:38 2019
 import cv2
 import numpy as np
 
-filename='740_20181212_CC2_02'
-
 def LEDDetection(currDayDir,vidFiles):
     
     csvFiles=[]
     
     for vid in vidFiles:
 
-        print(currDayDir+vid)    
+        print(currDayDir+'/'+vid)    
         cap = cv2.VideoCapture(currDayDir+'/'+vid)
         frameCnt=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         fps=int(cap.get(cv2.CAP_PROP_FPS))
@@ -29,8 +27,8 @@ def LEDDetection(currDayDir,vidFiles):
         timestamps=[]
     
         binOn=0
-        while(currTime<=dur):
-            cap.set(1,frameNum);
+        while(currTime<=dur-10):
+            cap.set(1,frameNum)
             ret, frame = cap.read()
             
             hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -38,15 +36,20 @@ def LEDDetection(currDayDir,vidFiles):
             upper_blue = np.array([130,255,255])
             mask = cv2.inRange(hsv,lower_blue,upper_blue)
             value=sum(sum(mask))
-            
-            if value > 5000:
+
+            if value > 5000 and binOn == 0:
+		        # If the LED was previously off but is now on
+                
+                # Algorithm to test if we have the first frame
+                
+
                 timestamps.append(int(currTime))
-                frameNum=frameNum+(fps*20)
+                frameNum=frameNum+(fps*10)
                 binOn=1
-            elif binOn==0:
-                frameNum=frameNum+10
+                print(currTime)
             else:
-                frameNum=frameNum+fps*8
+                continue
+            
             currTime=frameNum/fps
             
         filename=vid.strip('.MP4')
@@ -56,5 +59,7 @@ def LEDDetection(currDayDir,vidFiles):
         file.close()
         csvFiles.append(filename+'.csv')
         
+    cap.release()
+    cv2.destroyAllWindows()
     return csvFiles
 
