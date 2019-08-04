@@ -51,7 +51,7 @@ for animal in allAnimals:
         # If LED detection hasn't been performed, perform the LED Detection
         if len(csvFiles) == 0:
             csvFiles = LEDDetection.LEDDetection(currDayDir,vidFiles)
-        
+
         # Cycle through csvFiles and vidFiles
         for vid in vidFiles:
             
