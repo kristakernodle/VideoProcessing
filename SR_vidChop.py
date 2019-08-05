@@ -7,7 +7,6 @@ Created on Thu Sep 27 13:18:39 2018
 """
 
 import os
-from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 import LEDDetection
 
 # Define animal directory
@@ -87,6 +86,7 @@ for animal in allAnimals:
                                 vidNum=str(vidCnt)
                             
                             ffmpeg_extract_subclip(currDayDir + '/' + vid, startTime, endTime, targetname = outDir +'/' + fname + '_R' + vidNum + '.mp4')
+                            os.system("ffmpeg -y -i /Volumes/SharedX/Neuro-Leventhal/data/mouseS*/et745/Training/*0405*/*01.MP4 -vf select='"'gte(n\,821),setpts=PTS-STARTPTS'"' -r 60 -c:v libx264 -frames:v 960 -t 16 /Users/kkrista/Documents/GitHub/VideoProcessing/out.mp4")
                     
                     else:
                         continue
