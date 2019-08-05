@@ -48,46 +48,50 @@ for animal in allAnimals:
         existingReachDir=[file for file in allFiles if 'Reaches' in file]
         
         # If LED detection hasn't been performed, perform the LED Detection
-        if len(csvFiles) == 0:
-            csvFiles = LEDDetection.LEDDetection(currDayDir,vidFiles)
-
-        # Cycle through csvFiles and vidFiles
-        for vid in vidFiles:
+        while len(csvFiles) < len(vidFiles):
             
-            # If vid is an open file (._) or not a video, skip
-            if ('._' in vid) or ('.MP4' not in vid):
-                continue
-            
-            
-            fname = vid.strip('.MP4')
-            
-            for csv in csvFiles:
-                if (fname in csv) and (len(fname) is len(csv.strip('.csv'))):
+            for vid in vidFiles:
+                                              
+                # If vid is an open/invisible file (._) or not a video, skip
+                if ('._' in vid) or ('.MP4' not in vid):
+                    continue
+                
+                fname = vid.strip('.MP4')
+                
+                # If the video has not already been analyzed
+                if fname + '.csv' not in csvFiles:
+                                    
+                    print('Beginning Analysis on: ' + vid) 
+                
+                    csvFile, vidFrames = LEDDetection.LEDDetection(currDayDir,vid)
+                
+                    # Save csvFile (filename) into csvFiles (list of all csvFiles)
+                    csvFiles.append(csvFile)
+                else:
+                    with open(currDayDir + '/' + fname + '.csv') as f:
+                        vidFrames = f.read().splitlines()
+                        
+                currVidFile = currDayDir + '/' + vid
+                
+                outDir=currDayDir + '/Reaches' + fname[-2:]
+                
+                # If the reach directory does not already exist
+                if ('Reaches'+ fname[-2:] not in existingReachDir):
+                    os.makedirs(outDir)
+                        
+                    vidCnt=1
                     
-                    outDir=currDayDir + '/Reaches' + fname[-2:]
-                    # Make output directory
-                    if ('Reaches'+ fname[-2:] not in existingReachDir):
-                        os.makedirs(outDir)
-                    
-                    if not (os.listdir(currDayDir + '/' +'Reaches'+ fname[-2:])):
-                        # Load csv file
-                        with open(currDayDir + '/' + csv) as f:
-                            openCSV = f.read().splitlines()
-                    
-                        vidCnt=0
-                        for reachVid in openCSV:
-                            startTime=int(reachVid)
-                            endTime=startTime+17
-                            vidCnt += 1
-                            
-                            if len(str(vidCnt))<2:
-                                vidNum = '0' + str(vidCnt)
-                            else:
-                                vidNum=str(vidCnt)
-                            
-                            ffmpeg_extract_subclip(currDayDir + '/' + vid, startTime, endTime, targetname = outDir +'/' + fname + '_R' + vidNum + '.mp4')
-                            os.system("ffmpeg -y -i /Volumes/SharedX/Neuro-Leventhal/data/mouseS*/et745/Training/*0405*/*01.MP4 -vf select='"'gte(n\,821),setpts=PTS-STARTPTS'"' -r 60 -c:v libx264 -frames:v 960 -t 16 /Users/kkrista/Documents/GitHub/VideoProcessing/out.mp4")
-                    
-                    else:
-                        continue
+                    for reachVid in vidFrames:
+                        
+                        if len(str(vidCnt))<2:
+                            vidNum = '0' + str(vidCnt)
+                        else:
+                            vidNum=str(vidCnt)
+                        
+                        command = "ffmpeg -y -i " + currVidFile + " -vf select=" + '"' + "gte(n" + "\\" + "," + reachVid + "),setpts=PTS-STARTPTS" + '"' + " -r 60 -c:v libx264 -frames:v 960 -t 16 " + outDir + "/" + fname + "_R" + vidNum + ".mp4"
+                        #ffmpeg_extract_subclip(currDayDir + '/' + vid, startTime, endTime, targetname = outDir +'/' + fname + '_R' + vidNum + '.mp4')
+                        os.system(command)
+                        vidCnt += 1
+                else:
+                    continue
                 

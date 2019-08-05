@@ -45,50 +45,46 @@ def isFirstFrame(frameNum,cap,secs,firstFrame):
         
     return [firstFrame,frameNum,secs]
     
-def LEDDetection(currDayDir,vidFiles):
+def LEDDetection(currDayDir,vid):
+           
+    cap = cv2.VideoCapture(currDayDir+'/'+vid)
+    frameCnt=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     
-    csvFiles=[]
+    frameNum=0
     
-    for vid in vidFiles:
-
-        print(currDayDir+'/'+vid)    
-        cap = cv2.VideoCapture(currDayDir+'/'+vid)
-        frameCnt=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    vidFrames=[]
     
-        frameNum=0
-    
-        vidFrames=[]
-    
-        while(frameNum < frameCnt):
+    while(frameNum < frameCnt):
             
-            value = LED(cap,frameNum)
+        value = LED(cap,frameNum)
 
-            if value > 5000:
-                # If the LED is on:
-                # Algorithm to test if we have the first frame
+        if value > 5000:
+            # If the LED is on:
+            # Algorithm to test if we have the first frame
                 
-                firstFrame = False 
-                secs = 5
+            firstFrame = False 
+            secs = 5
                 
-                while firstFrame is False:
-                    [firstFrame,frameNum,secs] = isFirstFrame(frameNum,cap,secs,firstFrame)
+            while firstFrame is False:
+                [firstFrame,frameNum,secs] = isFirstFrame(frameNum,cap,secs,firstFrame)
 
-                vidFrames.append(frameNum)
+            vidFrames.append(frameNum)
                 
-                frameNum=frameNum+1400
+            frameNum=frameNum+1400
                 
-            else:
-                frameNum = frameNum+300
-                continue
+        else:
+            frameNum = frameNum+300
+            continue
 
-        filename=vid.strip('.MP4')
-        file=open(currDayDir+'/'+filename+'.csv','w+')
-        for vf in range(0,len(vidFrames)):
-            file.write('%d\n' %vidFrames[vf])   
-        file.close()
-        csvFiles.append(filename+'.csv')
+    filename = vid.strip('.MP4') + '.csv'
+        
+    file=open(currDayDir+'/'+filename,'w+')
+    for vf in range(0,len(vidFrames)):
+        file.write('%d\n' %vidFrames[vf])   
+    file.close()
         
     cap.release()
     cv2.destroyAllWindows()
-    return csvFiles
+    
+    return filename, vidFrames
 
