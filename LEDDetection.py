@@ -22,9 +22,9 @@ def LED(cap,frameNum):
     
     return value
 
-def isFirstFrame(frameNum,fps,cap,secs,firstFrame):
+def isFirstFrame(frameNum,cap,secs,firstFrame):
     
-    testFrame = np.floor(frameNum - (fps*secs))
+    testFrame = np.floor(frameNum - (60*secs))
     value = LED(cap,testFrame)
     
     if value > 5000 and secs == 5:
@@ -54,42 +54,37 @@ def LEDDetection(currDayDir,vidFiles):
         print(currDayDir+'/'+vid)    
         cap = cv2.VideoCapture(currDayDir+'/'+vid)
         frameCnt=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        fps=int(cap.get(cv2.CAP_PROP_FPS))
     
         frameNum=0
-        currTime=frameNum/fps
-        dur=frameCnt/fps
     
-        timestamps=[]
+        vidFrames=[]
     
-        while(currTime<=dur-10):
+        while(frameNum < frameCnt):
             
             value = LED(cap,frameNum)
 
             if value > 5000:
-		        # If the LED was previously off but is now on
-                
+                # If the LED is on:
                 # Algorithm to test if we have the first frame
                 
                 firstFrame = False 
                 secs = 5
+                
                 while firstFrame is False:
-                    [firstFrame,frameNum,secs] = isFirstFrame(frameNum,fps,cap,secs,firstFrame)
+                    [firstFrame,frameNum,secs] = isFirstFrame(frameNum,cap,secs,firstFrame)
 
-                currTime = frameNum/59
-                timestamps.append(int(currTime))
-                frameNum=frameNum+(fps*25)
-                print(currTime)
+                vidFrames.append(frameNum)
+                
+                frameNum=frameNum+1400
+                
             else:
-                frameNum = frameNum+(fps*5)
+                frameNum = frameNum+300
                 continue
-            
-            currTime=frameNum/fps
-            
+
         filename=vid.strip('.MP4')
         file=open(currDayDir+'/'+filename+'.csv','w+')
-        for ts in range(0,len(timestamps)):
-            file.write('%d\n' %timestamps[ts])   
+        for vf in range(0,len(vidFrames)):
+            file.write('%d\n' %vidFrames[vf])   
         file.close()
         csvFiles.append(filename+'.csv')
         
