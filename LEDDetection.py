@@ -1,15 +1,31 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Feb  5 15:39:38 2019
 
-@author: kkrista
 """
+LEDDetection.py
+
+This file contains a set of functions used for detecting the first frame a blue LED is on 
+from a video file. It is a dependency of the SR_vidChop.py script. 
+
+Dependencies:
+    cv2 4.0.0
+    numpy 1.15.4
+
+"""
+
+__author__ = 'Krista Kernodle'
+__copyright__ = 'Copyright 2018, The Leventhal Lab'
+__license__ = 'GPL'
+__version__ = '0.0.1'
+__maintainer__ = 'Krista Kernodle'
+__email__ = 'kkrista@umich.edu'
+__status__ = 'Development'
 
 import cv2
 import numpy as np
 
 def LED(cap,frameNum):
+    # This function checks whether a blue LED is on
+    # lower_blue and upper_blue provide the hsv upper and lower limits for detection
     
     cap.set(1,frameNum)
     ret, frame = cap.read()
@@ -26,6 +42,8 @@ def LED(cap,frameNum):
     return value
 
 def isFirstFrame(frameNum,cap,secs,firstFrame):
+    # This function identifies the first frame in the video where an LED is on
+    # Note: Assumtion is made that the frame rate is >= 59 fps
     
     testFrame = np.floor(frameNum - (60*secs))
     value = LED(cap,testFrame)
@@ -49,7 +67,17 @@ def isFirstFrame(frameNum,cap,secs,firstFrame):
     return [firstFrame,frameNum,secs]
     
 def LEDDetection(currDayDir,vid):
-           
+    # This function reads in the video and performs the LED detection for a blinking LED. 
+    #
+    # INPUT
+    #   currDayDir  : Directory containing video of interest
+    #   vid         : Video file of blinking blue LED
+    #
+    # OUTPUT
+    #   filename    : Name of the csv file that was generated containing vidFrames
+    #   vidFrames   : List containing all frame numbers that have been identified as the 
+    #                 start of the LED on period
+    
     cap = cv2.VideoCapture(currDayDir+'/'+vid)
     frameCnt=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     
