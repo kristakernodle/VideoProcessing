@@ -26,6 +26,7 @@ OUTPUT
 
 Dependencies:
     LEDDetection    : custom functions included with this file)
+    ffmpeg 4.0.2
 
 """
 
