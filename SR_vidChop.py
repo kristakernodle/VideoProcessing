@@ -40,6 +40,8 @@ for animal in allAnimals:
             continue
         
         currDayDir=currAnDir+day
+        if not os.path.isdir(currDayDir):
+            continue
         allFiles=os.listdir(currDayDir)
 
         
@@ -48,7 +50,7 @@ for animal in allAnimals:
         existingReachDir=[file for file in allFiles if 'Reaches' in file]
         
         # If LED detection hasn't been performed, perform the LED Detection
-        while len(csvFiles) < len(vidFiles):
+        while len(csvFiles) <= len(vidFiles):
             
             for vid in vidFiles:
                                               
@@ -76,7 +78,7 @@ for animal in allAnimals:
                 outDir=currDayDir + '/Reaches' + fname[-2:]
                 
                 # If the reach directory does not already exist
-                if ('Reaches'+ fname[-2:] not in existingReachDir):
+                if ('Reaches'+ fname[-2:] not in existingReachDir) or len(os.listdir(outDir)) < len(vidFrames):
                     os.makedirs(outDir)
                         
                     vidCnt=1
@@ -88,7 +90,7 @@ for animal in allAnimals:
                         else:
                             vidNum=str(vidCnt)
                         
-                        command = "ffmpeg -y -i " + currVidFile + " -vf select=" + '"' + "gte(n" + "\\" + "," + reachVid + "),setpts=PTS-STARTPTS" + '"' + " -r 60 -c:v libx264 -frames:v 960 -t 16 " + outDir + "/" + fname + "_R" + vidNum + ".mp4"
+                        command = "ffmpeg -y -i " + currVidFile + " -vf select=" + '"' + "gte(n" + "\\" + "," + str(reachVid) + "),setpts=PTS-STARTPTS" + '"' + " -r 60 -c:v libx264 -frames:v 960 -t 16 " + outDir + "/" + fname + "_R" + vidNum + ".mp4"
                         #ffmpeg_extract_subclip(currDayDir + '/' + vid, startTime, endTime, targetname = outDir +'/' + fname + '_R' + vidNum + '.mp4')
                         os.system(command)
                         vidCnt += 1
