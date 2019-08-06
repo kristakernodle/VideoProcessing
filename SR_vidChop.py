@@ -42,6 +42,8 @@ for animal in allAnimals:
         currDayDir=currAnDir+day
         if not os.path.isdir(currDayDir):
             continue
+
+        print('Checking: ' + day)
         allFiles=os.listdir(currDayDir)
 
         
@@ -49,11 +51,10 @@ for animal in allAnimals:
         csvFiles=[file for file in allFiles if file.endswith('.csv')]
         existingReachDir=[file for file in allFiles if 'Reaches' in file]
         
-        # If LED detection hasn't been performed, perform the LED Detection
-        while len(csvFiles) <= len(vidFiles):
+        while len(csvFiles) < len(vidFiles):
             
             for vid in vidFiles:
-                                              
+                
                 # If vid is an open/invisible file (._) or not a video, skip
                 if ('._' in vid) or ('.MP4' not in vid):
                     continue
@@ -72,17 +73,18 @@ for animal in allAnimals:
                 else:
                     with open(currDayDir + '/' + fname + '.csv') as f:
                         vidFrames = f.read().splitlines()
-                        
+                    
+                
                 currVidFile = currDayDir + '/' + vid
                 
                 outDir=currDayDir + '/Reaches' + fname[-2:]
                 
                 # If the reach directory does not already exist
                 if ('Reaches'+ fname[-2:] not in existingReachDir) or len(os.listdir(outDir)) < len(vidFrames):
-                    os.makedirs(outDir)
-                        
-                    vidCnt=1
+                    if not os.path.isdir(outDir):
+                        os.makedirs(outDir)
                     
+                    vidCnt=1
                     for reachVid in vidFrames:
                         
                         if len(str(vidCnt))<2:
@@ -91,9 +93,7 @@ for animal in allAnimals:
                             vidNum=str(vidCnt)
                         
                         command = "ffmpeg -y -i " + currVidFile + " -vf select=" + '"' + "gte(n" + "\\" + "," + str(reachVid) + "),setpts=PTS-STARTPTS" + '"' + " -r 60 -c:v libx264 -frames:v 960 -t 16 " + outDir + "/" + fname + "_R" + vidNum + ".mp4"
-                        #ffmpeg_extract_subclip(currDayDir + '/' + vid, startTime, endTime, targetname = outDir +'/' + fname + '_R' + vidNum + '.mp4')
                         os.system(command)
                         vidCnt += 1
                 else:
                     continue
-                
