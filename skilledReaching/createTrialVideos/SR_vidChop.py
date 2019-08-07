@@ -95,6 +95,40 @@ for animal in allAnimals:
         csvFiles=[file for file in allFiles if file.endswith('.csv')]
         existingReachDir=[file for file in allFiles if 'Reaches' in file]
         
+'''
+Here I want to create the ability to do a code switch to decide what code needs
+ to be run. 
+
+The cases are dependent on the length of vidFiles, csvFiles, existingReachDir, 
+and the number of files inside of each existing reach directory.
+
+CASE: len(vidFiles) = 0 & len(csvFiles) = 0
+In this case, the video files have been archived but the csvFiles were NOT 
+already obtained. I need to print to a log file that this training day needs to
+have the videos downloaded. 
+
+CASE: len(vidFiles) = 0 & len(csvFiles) != 0
+In this case, the video files have been archived but the csvFiles were already
+obtained.
+    
+Within this case, there are several cases:
+        
+    CASE: len(existingReachDir) = 0
+        Although the csvFiles have been generated, no reaching directories have
+        been established. 
+        
+        Must generate reach directories and perform cutting
+
+
+In this case, the video files have been archived. There are two possibilities:
+    1. Videos were already analyzed and csv files were obtained
+    2. Videos have not been analyzed
+In the case where video files have not been analyzed, I need a log file written
+containing the training day that needs to be downloaded for analysis. 
+In the case where the videos were already analyzed and csv files were obtained, 
+I need to compare
+'''
+
         while len(csvFiles) <= len(vidFiles) and len(existingReachDir) < len(vidFiles):
             # When there is not a csv file for each vid file OR reach directory for each video file
             
