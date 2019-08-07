@@ -113,7 +113,7 @@ for animal in allAnimals:
                     print('Beginning Analysis on: ' + vid) 
 
                     # Perform LED detection using imported function
-                    csvFile, vidFrames = LEDDetection.LEDDetection(currDayDir,vid)
+                    csvFile, vidFrames, frameCnt = LEDDetection.LEDDetection(currDayDir,vid)
                 
                     # Save csvFile (filename) into csvFiles (list of all csvFiles)
                     csvFiles.append(csvFile)
@@ -148,8 +148,13 @@ for animal in allAnimals:
                         else:
                             vidNum=str(vidCnt)
                         
+                        if reachVid + 960 > frameCnt:
+                            numFrames = frameCnt - reachVid
+                        else:
+                            numFrames = 960
+                        
                         # Define the command that will be used for cutting the videos
-                        command = "ffmpeg -y -i " + currVidFile + " -vf select=" + '"' + "gte(n" + "\\" + "," + str(reachVid) + "),setpts=PTS-STARTPTS" + '"' + " -r 60 -c:v libx264 -frames:v 960 -t 16 " + outDir + "/" + fname + "_R" + vidNum + ".mp4"
+                        command = "ffmpeg -y -i " + currVidFile + " -vf select=" + '"' + "gte(n" + "\\" + "," + str(reachVid) + "),setpts=PTS-STARTPTS" + '"' + " -r 60 -c:v libx264 -frames:v "+str(numFrames)+" -t 16 " + outDir + "/" + fname + "_R" + vidNum + ".mp4"
                         # Run the system command
                         os.system(command)
 

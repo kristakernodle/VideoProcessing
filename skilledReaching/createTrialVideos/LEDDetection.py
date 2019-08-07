@@ -121,5 +121,5 @@ def LEDDetection(currDayDir,vid):
     cap.release()
     cv2.destroyAllWindows()
     
-    return filename, vidFrames
+    return filename, vidFrames, frameCnt
 
