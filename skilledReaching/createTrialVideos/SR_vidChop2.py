@@ -14,7 +14,8 @@ import LEDDetection
 #animalDir = input("Type the directory containing all files to be analyzed: ")
 #if len(animalDir) < 1:
     
-    
+dlVids = []
+doBreak = False
 animalDir = '/Volumes/SharedX/Neuro-Leventhal/data/mouseSkilledReaching/'
 
 # Initialize Variables
@@ -29,7 +30,6 @@ for file in allFolders:
 
 # Loop through animals
 for animal in allAnimals:
-    animal = 'et740'
     # Define training directory for animal
     currAnDir=animalDir+animal+'/Training/'
         
@@ -40,6 +40,8 @@ for animal in allAnimals:
     # Get contents of 'Training' directory
     allTrainDays=os.listdir(currAnDir)
     
+    
+    allTrainDays.sort()
     # Loop through training days
     for day in allTrainDays:
 
@@ -70,73 +72,38 @@ for animal in allAnimals:
         vidFiles.sort()
         csvFiles.sort()
         existingReachDir.sort()
-        
+
         if len(csvFiles) == 0 and len(vidFiles) == 0:
             case = 0
-            print('1 need to download these videos')
         elif len(csvFiles) !=0 and len(vidFiles) == 0 and len(existingReachDir) == 0:
             case = 0
-            print('2 need to download these videos')
         elif len(csvFiles) == 0 and len(vidFiles) != 0:
             case = 1
-            print('LED needs to be found for this day')
         elif len(csvFiles) == len(vidFiles) and len(existingReachDir) == 0:
-            print('need to cut these videos')
+            case = 2
         elif (len(csvFiles) == len(vidFiles) or len(csvFiles) == len(existingReachDir)) and len(existingReachDir) != 0:
-                        
-            fname = '_'.join(day.split('_')[:-1])[2:] + '_'
-            newCSVFiles = []
-            
-            for reachDir in existingReachDir:
-                
-                csvName = fname + reachDir[-2:]
-                
-                with open(currDayDir + '/' + csvName + '.csv') as f:
-                    vidFrames = f.read().splitlines()
-                    
-                if len(vidFrames) == len(os.listdir(currDayDir + '/' + reachDir)):
-                    continue
-                else:
-                    newCSVFiles.append(csvName + '.csv')
-                    print('cuttin me some vidyas')
-
+            case = 2
+        elif len(csvFiles) < len(vidFiles) and len(existingReachDir) == 0:
+            case = 1
+        else:
+            print('found an exception that needs to be addressed:\n')
+            print(day + '\n')
+            print('csvFiles = ' + str(len(csvFiles)) + '\n')
+            print('vidFiles = ' + str(len(vidFiles)) + '\n')
+            print('existingReachDir = ' + str(len(existingReachDir)) + '\n')
+            doBreak = True
+            break
         
-#        if len(csvFiles) == 0:
-#            
-#            if len(vidFiles) == 0:
-#                print('1 need to download these videos')
-#            else:
-#                print('LED needs to be found for this day')
-#            
-#            continue
-#        
-#        elif len(csvFiles) != 0:
-#        
-#            if len(csvFiles) >= len(vidFiles) or len(csvFiles) >= len(existingReachDir):
-#                print('now check reaching directories')
-#                continue
-#            else:
-#                
-#                if len(vidFiles) == 0:
-#                    print('2 need to download these videos')
-#                else:
-#                    print('figure out which videos need LED to be found')
-#        
-#        elif len(existingReachDir) != 0:
-#            
-#            fname = '_'.join(day.split('_')[:-1])[2:] + '_'
-#            
-#            for reachDir in existingReachDir:
-#                
-#                csvName = fname + reachDir[-2:]
-#                
-#                with open(currDayDir + '/' + csvName + '.csv') as f:
-#                    vidFrames = f.read().splitlines()
-#                    
-#                if len(vidFrames) == len(os.listdir(currDayDir + '/' + reachDir)):
-#                    continue
-#                else:
-#                    print('cuttin me some vidyas')
+        if doBreak is True:
+            break
+        
+        dlVids = LEDDetection.switcher(case, day, currDayDir, csvFiles,vidFiles,existingReachDir, dlVids)
+
+    if doBreak is True:
+        break
+            
+        
+            
 
         
         
