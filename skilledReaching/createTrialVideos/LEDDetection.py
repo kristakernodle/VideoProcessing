@@ -113,7 +113,7 @@ def LEDDetection(currDayDir,vid):
             continue
 
     filename = vid.strip('.MP4') + '.csv'
-        
+    print(filename)
     file=open(currDayDir+'/'+filename,'w+')
     for vf in range(0,len(vidFrames)):
         file.write('%d\n' %vidFrames[vf])   
@@ -133,20 +133,20 @@ def switcher(case,day,currDayDir,csvFiles,vidFiles,existingReachDir,dlVids):
             case = 9
         
         elif case == 1:
-            
             for file in vidFiles:
                 
                 if file[:-3] + 'csv' in csvFiles:
                     case = 2
                     continue
                 else:
+                    print('Beginning LEDDetection')
                     filename = LEDDetection(currDayDir,file)
                     csvFiles.append(filename)
                     case = 2
 
         elif case == 2: 
             
-            fname = '_'.join(day.split('_')[:-1])[2:] + '_'
+            fname = '_'.join(csvFiles[0].split('_')[:-1]) + '_'
             newCSVFiles = []
             
             for reachDir in existingReachDir:
@@ -175,18 +175,21 @@ def switcher(case,day,currDayDir,csvFiles,vidFiles,existingReachDir,dlVids):
                             vidFrames = f.read().splitlines()
                         
                         fname = file.strip('.MP4')
-                    
+                        print('Beginning video cutting')
                         cutVids(currDayDir,file,fname,existingReachDir,vidFrames)
             
             case = 9
 
     return dlVids
 
-def cutVids(currDayDir,vid,fname,existingReachDir,vidFrames,frameCnt):
+def cutVids(currDayDir,vid,fname,existingReachDir,vidFrames):
     
     # Define full path for current video file
     currVidFile = currDayDir + '/' + vid
-                
+    cap = cv2.VideoCapture(currVidFile)
+    frameCnt = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    cap.release()    
+
     # Define full path for output video files ('Reach' directory)
     outDir=currDayDir + '/Reaches' + fname[-2:]
                 
@@ -197,27 +200,32 @@ def cutVids(currDayDir,vid,fname,existingReachDir,vidFrames,frameCnt):
             # If the reach directory does not already exist
             os.makedirs(outDir)
                     
-            # Create trial counting variable
+        # Create trial counting variable
+        if len(os.listdir(outDir)) == 0:
             vidCnt=1
+        else:
+            vidCnt = len(os.listdir(outDir)) + 1
+            vidFrames = vidFrames[vidCnt:]
+        # Loop through each trial to cut into short trial videos
+        for reachVid in vidFrames:
+                
+            reachVid = int(reachVid)
+            
+            # This statement creates the string for trial counting (part of output video's filename)
+            if len(str(vidCnt))<2:
+                vidNum = '0' + str(vidCnt)
+            else:
+                vidNum=str(vidCnt)
+            
+            if reachVid + 960 > frameCnt:
+                numFrames = frameCnt - reachVid
+            else:
+                numFrames = 960
+            
+            # Define the command that will be used for cutting the videos
+            command = "ffmpeg -hide_banner -loglevel panic -i " + currVidFile + " -vf select=" + '"' + "gte(n" + "\\" + "," + str(reachVid) + "),setpts=PTS-STARTPTS" + '"' + " -r 60 -c:v libx264 -frames:v "+str(numFrames)+" -t 16 " + outDir + "/" + fname + "_R" + vidNum + ".mp4"
+            # Run the system command
+            os.system(command)
 
-            # Loop through each trial to cut into short trial videos
-            for reachVid in vidFrames:
-                
-                # This statement creates the string for trial counting (part of output video's filename)
-                if len(str(vidCnt))<2:
-                    vidNum = '0' + str(vidCnt)
-                else:
-                    vidNum=str(vidCnt)
-                
-                if reachVid + 960 > frameCnt:
-                    numFrames = frameCnt - reachVid
-                else:
-                    numFrames = 960
-                
-                # Define the command that will be used for cutting the videos
-                command = "ffmpeg -y -i " + currVidFile + " -vf select=" + '"' + "gte(n" + "\\" + "," + str(reachVid) + "),setpts=PTS-STARTPTS" + '"' + " -r 60 -c:v libx264 -frames:v "+str(numFrames)+" -t 16 " + outDir + "/" + fname + "_R" + vidNum + ".mp4"
-                # Run the system command
-                os.system(command)
-
-                # Increase the trial count 
-                vidCnt += 1
+            # Increase the trial count 
+            vidCnt += 1

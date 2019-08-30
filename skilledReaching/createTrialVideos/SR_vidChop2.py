@@ -22,14 +22,18 @@ animalDir = '/Volumes/SharedX/Neuro-Leventhal/data/mouseSkilledReaching/'
 allAnimals=[]
 allFolders = os.listdir(animalDir)
 
+
+
 # Get all animal folders
 for file in allFolders:
     if 'et' in file[:2]:
         # Collect the files that have 'et', denoting 'Ear Tag' into one list
         allAnimals.append(file)
 
+allAnimals.sort()
 # Loop through animals
 for animal in allAnimals:
+    
     # Define training directory for animal
     currAnDir=animalDir+animal+'/Training/'
         
@@ -79,6 +83,10 @@ for animal in allAnimals:
             case = 0
         elif len(csvFiles) == 0 and len(vidFiles) != 0:
             case = 1
+        elif len(csvFiles) < len(vidFiles):
+            case = 1
+        elif len(csvFiles) > len(vidFiles) and len(existingReachDir) < len(csvFiles):
+            case = 2
         elif len(csvFiles) == len(vidFiles) and len(existingReachDir) == 0:
             case = 2
         elif (len(csvFiles) == len(vidFiles) or len(csvFiles) == len(existingReachDir)) and len(existingReachDir) != 0:
@@ -96,6 +104,9 @@ for animal in allAnimals:
         
         if doBreak is True:
             break
+        
+        if day == 'et7061_20190809_CC1_T6':
+            print('paused')
         
         dlVids = LEDDetection.switcher(case, day, currDayDir, csvFiles,vidFiles,existingReachDir, dlVids)
 
