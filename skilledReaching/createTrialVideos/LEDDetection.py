@@ -163,6 +163,14 @@ def switcher(case,day,currDayDir,csvFiles,vidFiles,existingReachDir,dlVids):
             
             if len(existingReachDir) == 0:
                 newCSVFiles = csvFiles
+            elif len(existingReachDir) < len(csvFiles):
+                for csv in csvFiles:
+                    vidNum = csv.split('_')[-1]
+                    vidNum = vidNum.strip('.csv')
+                    if 'Reaches' + vidNum in existingReachDir:
+                        continue
+                    else:
+                        newCSVFiles.append(csv)
             
             for csv in newCSVFiles:
                     
