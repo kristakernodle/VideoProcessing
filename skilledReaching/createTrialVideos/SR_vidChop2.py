@@ -105,9 +105,6 @@ for animal in allAnimals:
         if doBreak is True:
             break
         
-        if day == 'et7061_20190809_CC1_T6':
-            print('paused')
-        
         dlVids = LEDDetection.switcher(case, day, currDayDir, csvFiles,vidFiles,existingReachDir, dlVids)
 
     if doBreak is True:
