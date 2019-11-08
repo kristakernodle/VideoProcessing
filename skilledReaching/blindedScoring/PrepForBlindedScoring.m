@@ -16,7 +16,7 @@
 %   inDir - Directory of all files that need renaming
 %   inDirWant - Common aspect of all folder names in the inDir
 %   subDir - Commonly named folder for all folders in the inDir
-%   subDitWant - Common aspect of all folder names in the subDir
+%   subDirWant - Common aspect of all folder names in the subDir
 %   finFoldWant - Common aspect of all folder names that contain files to
 %       be renamed
 %   filenameStruct - Commonly formatted names of all files to be renamed
@@ -30,15 +30,15 @@
 %
 
 %% Inputs
-transDir = '/Volumes/HD_Krista/Experiments/SkilledReachingExperiments/SR_DlxCKO_BehOnly/VideoPipeline/';
-transName = 'translate.mat';
-inDir = '/Volumes/HD_Krista/Experiments/SkilledReachingExperiments/SR_DlxCKO_BehOnly/Animals/';
-inDirWant = 'Score';
+transDir = '/Volumes/SharedX/Neuro-Leventhal/data/mouseSkilledReaching/blindedScoring/Alli_B/';
+transName = 'translated_AB.mat';
+inDir = '/Volumes/SharedX/Neuro-Leventhal/data/mouseSkilledReaching/';
+inDirWant = 'et';
 subDir = '/Training/';
 subDirWant = 'CC';
-finFoldWant = 'Reach';
-filenameStruct = '/*_*_*_*.MP4';
-outDir = '/Volumes/Krista_BUHD/Scoring/';
+finFoldWant = 'Reaches';
+filenameStruct = '/*_*_*_*_*.MP4';
+outDir = '/Volumes/KRISTAEHD/Scoring_AlliB/';
 
 %% Initiate Variables
 wantFolders = [];
@@ -46,6 +46,7 @@ allNewNames = [];
 uniqOrigNames = [];
 
 %% Import .mat
+
 transFile = load([transDir,transName]);
 allOrigName = transFile.allOrigName;
 allNewName = transFile.allNewName;
@@ -118,7 +119,9 @@ for jj = 1:length(wantFolders)
         
         for jln = 1:length(wantReachFolders)
             allFiles = dir(strcat(reachDir,'/',char(wantReachFolders(jln)),filenameStruct));
-       
+            if isempty(allFiles)
+                continue
+            end
             firstName = allFiles(1).name;
             split = strsplit(firstName,'_');
             
@@ -190,25 +193,26 @@ end % Second level of folders
 
 %% Save All
 
-% Convert character arrays uniqOrigNames & allNewNames to strings
+% % Convert character arrays uniqOrigNames & allNewNames to strings
 uniqOrigNames = string(uniqOrigNames);
 allNewNames = string(allNewNames);
 allOrigName = string(allOrigName);
 allNewName = string(allNewName);
-
-% Concatenate into one variable (transFile)
+% 
+% % Concatenate into one variable (transFile)
 startRowCt = size(allOrigName,1)+1;
 endRowCt = size(allOrigName,1)+length(uniqOrigNames);
 allOrigName(1:startRowCt-1,1) = allOrigName;
 allOrigName(startRowCt:endRowCt,1) = uniqOrigNames;
 allNewName(1:startRowCt-1,1) = allNewName;
 allNewName(startRowCt:endRowCt,1) = allNewNames;
-
-% Save new transFile as .mat, overwritting old variables
-
-save '/Volumes/HD_Krista/Experiments/SkilledReachingExperiments/SR_DlxCKO_BehOnly/VideoPipeline/translate.mat' allOrigName allNewName
-
-
+% 
+% % Save new transFile as .mat, overwritting old variables
+% 
+% 
+% save '/Volumes/SharedX/Neuro-Leventhal/data/mouseSkilledReaching/blindedScoring/Alli_B/translated_AB.mat' allOrigName allNewName
+% 
+% 
 
 
 

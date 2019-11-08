@@ -22,6 +22,7 @@ __status__ = 'Development'
 
 import cv2
 import numpy as np
+import os
 
 def LED(cap,frameNum):
     # This function checks whether a blue LED is on
@@ -77,7 +78,7 @@ def LEDDetection(currDayDir,vid):
     #   filename    : Name of the csv file that was generated containing vidFrames
     #   vidFrames   : List containing all frame numbers that have been identified as the 
     #                 start of the LED on period
-    
+
     cap = cv2.VideoCapture(currDayDir+'/'+vid)
     frameCnt=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     
@@ -112,7 +113,7 @@ def LEDDetection(currDayDir,vid):
             continue
 
     filename = vid.strip('.MP4') + '.csv'
-        
+    print(filename)
     file=open(currDayDir+'/'+filename,'w+')
     for vf in range(0,len(vidFrames)):
         file.write('%d\n' %vidFrames[vf])   
@@ -120,6 +121,119 @@ def LEDDetection(currDayDir,vid):
         
     cap.release()
     cv2.destroyAllWindows()
-    
-    return filename, vidFrames, frameCnt
 
+    return filename
+
+def switcher(case,day,currDayDir,csvFiles,vidFiles,existingReachDir,dlVids):
+    while case != 9:
+        
+        if case == 0:
+            
+            dlVids.append(day)
+            case = 9
+        
+        elif case == 1:
+            for file in vidFiles:
+                
+                if file[:-3] + 'csv' in csvFiles:
+                    case = 2
+                    continue
+                else:
+                    print('Beginning LEDDetection')
+                    filename = LEDDetection(currDayDir,file)
+                    csvFiles.append(filename)
+                    case = 2
+
+        elif case == 2: 
+            
+            fname = '_'.join(csvFiles[0].split('_')[:-1]) + '_'
+            newCSVFiles = []
+            
+            for reachDir in existingReachDir:
+                
+                csvName = fname + reachDir[-2:]
+                
+                with open(currDayDir + '/' + csvName + '.csv') as f:
+                    vidFrames = f.read().splitlines()
+                    
+                if len(vidFrames) == len(os.listdir(currDayDir + '/' + reachDir)):
+                    continue
+                else:
+                    newCSVFiles.append(csvName + '.csv')
+            
+            if len(existingReachDir) == 0:
+                newCSVFiles = csvFiles
+            elif len(existingReachDir) < len(csvFiles):
+                for csv in csvFiles:
+                    vidNum = csv.split('_')[-1]
+                    vidNum = vidNum.strip('.csv')
+                    if 'Reaches' + vidNum in existingReachDir:
+                        continue
+                    else:
+                        newCSVFiles.append(csv)
+            
+            for csv in newCSVFiles:
+                    
+                for file in vidFiles:
+                    
+                    if csv[:-3] not in file[:-3]:
+                        continue
+                    else:
+                        with open(currDayDir + '/' + csv) as f:
+                            vidFrames = f.read().splitlines()
+                        
+                        fname = file.strip('.MP4')
+                        print('Beginning video cutting')
+                        cutVids(currDayDir,file,fname,existingReachDir,vidFrames)
+            
+            case = 9
+
+    return dlVids
+
+def cutVids(currDayDir,vid,fname,existingReachDir,vidFrames):
+    
+    # Define full path for current video file
+    currVidFile = currDayDir + '/' + vid
+    cap = cv2.VideoCapture(currVidFile)
+    frameCnt = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    cap.release()    
+
+    # Define full path for output video files ('Reach' directory)
+    outDir=currDayDir + '/Reaches' + fname[-2:]
+                
+    if ('Reaches'+ fname[-2:] not in existingReachDir) or len(os.listdir(outDir)) < len(vidFrames):
+        # If the reach directory does not already exist OR the outDir has fewer videos than vidFrames says there are trials
+                    
+        if not os.path.isdir(outDir):
+            # If the reach directory does not already exist
+            os.makedirs(outDir)
+                    
+        # Create trial counting variable
+        if len(os.listdir(outDir)) == 0:
+            vidCnt=1
+        else:
+            vidCnt = len(os.listdir(outDir)) + 1
+            vidFrames = vidFrames[vidCnt:]
+        # Loop through each trial to cut into short trial videos
+        for reachVid in vidFrames:
+                
+            reachVid = int(reachVid)
+            
+            # This statement creates the string for trial counting (part of output video's filename)
+            if len(str(vidCnt))<2:
+                vidNum = '0' + str(vidCnt)
+            else:
+                vidNum=str(vidCnt)
+            
+            if reachVid + 960 > frameCnt:
+                numFrames = frameCnt - reachVid
+            else:
+                numFrames = 960
+            
+            # Define the command that will be used for cutting the videos
+            command = "ffmpeg -hide_banner -loglevel panic -i " + currVidFile + " -vf select=" + '"' + "gte(n" + "\\" + "," + str(reachVid) + "),setpts=PTS-STARTPTS" + '"' + " -r 60 -c:v libx264 -frames:v "+str(numFrames)+" -t 16 " + outDir + "/" + fname + "_R" + vidNum + ".mp4"
+            # Run the system command
+            os.system(command)
+
+            # Increase the trial count 
+            vidCnt += 1
