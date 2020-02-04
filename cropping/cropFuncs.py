@@ -48,6 +48,8 @@ def randVidSel(vidDir,numVids,wrkDir):
 def getROI(vidFile):
     vidcap = cv2.VideoCapture(vidFile)
     success, image = vidcap.read()
+    if success is False:
+        return print('Empty Video')
     small = cv2.resize(image,(0,0),fx=0.5,fy=0.5)
             
     r = cv2.selectROI(small)

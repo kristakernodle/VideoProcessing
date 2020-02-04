@@ -9,8 +9,8 @@ Created on Fri Jul 12 14:22:14 2019
 import os
 import cropFuncs as cropFunc
 
-allSubjDir = '/media/kkrista/KRISTAEHD/DLCSR/20190712/'
-cropParamsDir = '/home/kkrista/Documents/SkilledReaching/cropParams/'
+allSubjDir = '/Volumes/SharedX/Neuro-Leventhal/data/mouseSkilledReaching/'
+cropParamsDir = allSubjDir + 'cropParams/'
 
 CC1_directCrops = cropFunc.readfile(cropParamsDir + 'CC1_directCrops.csv')
 CC1_leftCrops = cropFunc.readfile(cropParamsDir + 'CC1_leftCrops.csv')
@@ -64,44 +64,45 @@ for subj in subjList:
                             for vid in reachVids:
                                 # Walk through files in reach video directory
                                 
-                                if '._' in vid:
+                                if '._' in vid or ('mp4' not in vid and '.MP4' not in vid):
                                     # Skip invisible files
                                     continue
 
-                                elif '.mp4' in vid or '.MP4' in vid:
-                                    # Look at video files
+                                # Look at video files
 
-                                    vidIdentifiers = vid.split('_')
-                                    etNum = vidIdentifiers[0]
-                                    date = vidIdentifiers[1]
-                                    CCNum = vidIdentifiers[2]
-                                    
-                                    # Process based on calibration cube number
-                                    if '1' in CCNum:
-
-                                        if date in CC1Dates:
-                                            continue
-                                        else:
-                                            CC1Dates.append(date)
-                                            
-                                            [height, width, x1, x2, y1, y2] = cropFunc.getROI(reachDir + '/' + vid)
-
-                                            CC1_directCrops.append((',').join([date,str(x1),str(x2),str(x1),str(y2)]))
-                                            CC1_leftCrops.append((',').join([date,'0',str(x1),'0',str(y2)]))
-                                            CC1_rightCrops.append((',').join([date,str(x1),str(width),'0',str(y2)]))
-                                    
-                                    elif '2' in CCNum:
+                                vidIdentifiers = vid.split('_')
+                                etNum = vidIdentifiers[0]
+                                date = vidIdentifiers[1]
+                                CCNum = vidIdentifiers[2]
                                 
-                                        if date in CC2Dates:
-                                            continue
-                                        else:
-                                            CC2Dates.append(date)
-                                            
-                                            [height, width, x1, x2, y1, y2] = cropFunc.getROI(reachDir + '/' + vid)
-                                            
-                                            CC2_directCrops.append((',').join([date,str(x1),str(x2),str(x1),str(y2)]))
-                                            CC2_leftCrops.append((',').join([date,'0',str(x1),'0',str(y2)]))
-                                            CC2_rightCrops.append((',').join([date,str(x1),str(width),'0',str(y2)]))
+                                # Process based on calibration cube number
+                                if '1' in CCNum:
+
+                                    if date in CC1Dates:
+                                        continue
+                                    else:
+                                        CC1Dates.append(date)
+                                        
+                                        [height, width, x1, x2, y1, y2] = cropFunc.getROI(reachDir + '/' + vid)
+
+                                        CC1_directCrops.append((',').join([date,str(x1),str(x2),str(x1),str(y2)]))
+                                        CC1_leftCrops.append((',').join([date,'0',str(x1),'0',str(y2)]))
+                                        CC1_rightCrops.append((',').join([date,str(x1),str(width),'0',str(y2)]))
+                                
+                                elif '2' in CCNum:
+                            
+                                    if date in CC2Dates:
+                                        continue
+                                    else:
+                                        CC2Dates.append(date)
+                                        
+                                        [height, width, x1, x2, y1, y2] = cropFunc.getROI(reachDir + '/' + vid)
+                                        
+                                        CC2_directCrops.append((',').join([date,str(x1),str(x2),str(x1),str(y2)]))
+                                        CC2_leftCrops.append((',').join([date,'0',str(x1),'0',str(y2)]))
+                                        CC2_rightCrops.append((',').join([date,str(x1),str(width),'0',str(y2)]))
+                                        
+                                
                         else:
                             # if you do not have a reach video directory, move on
                             continue
