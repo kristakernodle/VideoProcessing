@@ -216,8 +216,11 @@ def cutVids(currDayDir,vid,fname,existingReachDir,vidFrames):
             vidFrames = vidFrames[vidCnt:]
         # Loop through each trial to cut into short trial videos
         for reachVid in vidFrames:
-                
-            reachVid = int(reachVid)
+              
+            try:
+                reachVid = int(reachVid)
+            except:
+                break
             
             # This statement creates the string for trial counting (part of output video's filename)
             if len(str(vidCnt))<2:
