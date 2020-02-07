@@ -1,0 +1,131 @@
+Task: leftPP_Center
+TrainingFraction:
+- 0.95
+alphavalue: 0.5
+batch_size: 4
+bodyparts:
+- part1
+- part2
+- part3
+colormap: hsv
+corner2move2: !!python/tuple
+- 50
+- 50
+cropping: false
+date: Jan23
+dotsize: 12
+iteration: 0
+move2corner: false
+numframes2pick: 5
+pcutoff: 0.1
+project_path: /home/kkrista/Documents/leftPP_Center-Krista-2019-01-23
+resnet: 50
+scorer: Krista
+snapshotindex: -1
+start: 0
+stop: 1
+video_sets:
+  /opt/usb/DLCSR/leftPaw/704_20181204_01_R9.MP4:
+    crop: 750, 1280, 136, 962
+  /opt/usb/DLCSR/leftPaw/704_20181204_02_R36.MP4:
+    crop: 740, 1278, 144, 960
+  /opt/usb/DLCSR/leftPaw/704_20181207_02_R19.MP4:
+    crop: 710, 1326, 50, 1022
+  /opt/usb/DLCSR/leftPaw/704_20181210_02_R5.MP4:
+    crop: 740, 1270, 106, 948
+  /opt/usb/DLCSR/leftPaw/704_20181210_02_R35.MP4:
+    crop: 740, 1270, 106, 948
+  /opt/usb/DLCSR/leftPaw/704_20181220_02_R12.MP4:
+    crop: 680, 1348, 90, 1064
+  /opt/usb/DLCSR/leftPaw/704_20181210_01_R36.MP4:
+    crop: 752, 1274, 156, 958
+  /opt/usb/DLCSR/leftPaw/740_20181217_01_R18.MP4:
+    crop: 760, 1254, 140, 956
+  /opt/usb/DLCSR/leftPaw/740_20181225_01_R17.MP4:
+    crop: 698, 1346, 80, 1056
+  /opt/usb/DLCSR/leftPaw/757_20181025_01_R4.MP4:
+    crop: 696, 1320, 44, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181101_01_R13.MP4:
+    crop: 712, 1304, 136, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181105_01_R38.MP4:
+    crop: 716, 1296, 136, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181108_01_R7.MP4:
+    crop: 700, 1308, 110, 1068
+  /opt/usb/DLCSR/leftPaw/757_20181108_01_R33.MP4:
+    crop: 700, 1308, 110, 1068
+  /opt/usb/DLCSR/leftPaw/757_20181114_01_R4.MP4:
+    crop: 696, 1306, 112, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181115_01_R41.MP4:
+    crop: 696, 1316, 90, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181120_01_R4.MP4:
+    crop: 696, 1328, 94, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181120_01_R10.MP4:
+    crop: 696, 1328, 94, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181120_01_R32.MP4:
+    crop: 696, 1328, 94, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181126_01_R39.MP4:
+    crop: 718, 1312, 112, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181128_01_R20.MP4:
+    crop: 706, 1342, 72, 1080
+  /opt/usb/DLCSR/leftPaw/740_20181130_02_R24.MP4:
+    crop: 688, 1322, 56, 1022
+  /opt/usb/DLCSR/leftPaw/740_20181217_02_R19.MP4:
+    crop: 762, 1262, 148, 934
+  /opt/usb/DLCSR/leftPaw/740_20181225_02_R37.MP4:
+    crop: 704, 1354, 42, 1060
+  /opt/usb/DLCSR/leftPaw/757_20181026_02_R21.MP4:
+    crop: 694, 1332, 106, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181026_02_R34.MP4:
+    crop: 694, 1332, 106, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181026_02_R38.MP4:
+    crop: 694, 1332, 106, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181031_02_R10.MP4:
+    crop: 748, 1274, 146, 1010
+  /opt/usb/DLCSR/leftPaw/757_20181031_02_R25.MP4:
+    crop: 748, 1274, 146, 1010
+  /opt/usb/DLCSR/leftPaw/757_20181031_02_R42.MP4:
+    crop: 748, 1274, 146, 1010
+  /opt/usb/DLCSR/leftPaw/757_20181101_02_R12.MP4:
+    crop: 686, 1326, 94, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181101_02_R28.MP4:
+    crop: 686, 1326, 94, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181105_02_R28.MP4:
+    crop: 704, 1298, 122, 1072
+  /opt/usb/DLCSR/leftPaw/757_20181106_02_R5.MP4:
+    crop: 726, 1286, 142, 1050
+  /opt/usb/DLCSR/leftPaw/757_20181107_02_R10.MP4:
+    crop: 698, 1306, 134, 1064
+  /opt/usb/DLCSR/leftPaw/757_20181115_02_R19.MP4:
+    crop: 686, 1328, 110, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181121_02_R39.MP4:
+    crop: 696, 1316, 120, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181121_02_R41.MP4:
+    crop: 696, 1316, 120, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181126_02_R14.MP4:
+    crop: 704, 1324, 104, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181126_02_R40.MP4:
+    crop: 704, 1324, 104, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181126_02_R44.MP4:
+    crop: 704, 1324, 104, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181128_02_R12.MP4:
+    crop: 698, 1342, 88, 1080
+  /opt/usb/DLCSR/leftPaw/740_20181121_03_R13.MP4:
+    crop: 724, 1350, 82, 1034
+  /opt/usb/DLCSR/leftPaw/740_20181217_03_R17.MP4:
+    crop: 764, 1248, 116, 926
+  /opt/usb/DLCSR/leftPaw/757_20181031_03_R3.MP4:
+    crop: 738, 1268, 170, 1006
+  /opt/usb/DLCSR/leftPaw/757_20181107_03_R19.MP4:
+    crop: 698, 1296, 128, 1070
+  /opt/usb/DLCSR/leftPaw/757_20181107_03_R24.MP4:
+    crop: 698, 1296, 128, 1070
+  /opt/usb/DLCSR/leftPaw/757_20181108_03_R1.MP4:
+    crop: 680, 1308, 92, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181115_03_R13.MP4:
+    crop: 680, 1338, 92, 1080
+  /opt/usb/DLCSR/leftPaw/757_20181119_03_R5.MP4:
+    crop: 696, 1310, 132, 1080
+x1: 0
+x2: 640
+y1: 277
+y2: 624

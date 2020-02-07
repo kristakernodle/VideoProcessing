@@ -1,0 +1,69 @@
+# This batchfile will create a new DLC project and walk you through training the network.
+
+# Call in variables file
+/home/kkrista/Documents/Scripts_Create/dlcVar.txt
+
+# Script Defined Variables:
+# 	trainFcsv: location of the csv containing video names of the training dataset
+
+# Access the docker container and create a new project:
+
+docker start $dockerContainer
+docker exec --user $USER -it $dockerContainer sh -c "/home/kkrista/Documents/Script_Create/dlcCreateProj.txt"
+
+# Redefine the working directory to include the project file created by DLC
+fileDate=$(date "+%Y-%m-%d")
+working_directory="$working_directory/$projName-$experimenter-$fileDate/"
+
+trainFcsv="$working_directory/trainFiles.csv"
+
+# Generate list of training videos
+
+python -c \
+'from setDLCFunc import randVidSel;
+randVidSel('$locVidDir','$numVids','$working_directory')'
+
+# Generate crop parameters
+python -c \
+'from setDLCFunc import *;
+setDLCFunc.getROI('$locVidDir','$docVidDir','$working_directory','$trainFcsv')'
+
+# Edit the config.yaml associated with the DLC project to add the bodyparts
+python -c \
+'from setDLCFunc import *;
+setDLCFunc.configEdit('$working_directory',"bodyparts",'$bodyparts')'
+
+# Add videos to DLC file
+docker start $dockerContainer
+docker exec --user $USER -it $dockerContainer /bin/bash
+export DLClight=True
+python -c \
+'import deeplabcut;
+trainVids=open('$working_directory'+"trainFiles.csv",'r');
+trainVids=['$docVidDir'+ t for t in trainVids];
+deeplabcut.add_new_videos('$working_directory'+"/config.yaml",trainVids,copy_videos=False)'
+exit
+
+# Edit the config.yaml associated with the DLC project to add the crop parameters for the training set
+
+python -c \
+'print("Adding crop parameters for training set to config file");
+from setDLCFunc import *;
+setDLCFunc.configEdit('$working_directory',"trainingSet",'$bodyparts')'
+
+# Extract the frames needed for labeling (must enter dlc_env)
+
+source activate dlc_env
+python -c \
+'import deeplabcut;
+deeplabcut.extract_frames('$working_directory'+"config.yaml",'automatic','uniform',crop=True);
+deeplabcut.label_frames('$working_directory'+"config.yaml");
+deeplabcut.check_labels('$working_directory'+"config.yaml")'
+exit
+
+# Your DLC network should be ready to train! See the training script.
+
+
+
+
+

@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Feb  1 09:48:24 2019
+
+@author: kkrista
+"""
+
+
+import os
+from setDLCFunc import readfile
+
+def reWriteVars(txtFile):
+    os.chdir('/home/kkrista/Documents/Script/PythonScripts/')
+    dlcVars=readfile('/home/kkrista/Documents/Script/dlcVar.txt')
+    file=readfile(txtFile)
+    outData=file
+    fileW=open(txtFile,'w')
+    
+    for line in dlcVars:
+        if ("dockerContainer" in line) and ('#' not in line):
+           dockerContainer=line
+        elif ("projName" in line) and ('#' not in line):
+           projName=line
+        elif ("experimenter" in line) and ('#' not in line):
+           exp=line
+        elif ("dlc_directory" in line) and ('#' not in line):
+           dlcDir=line
+        elif ("locVidDir" in line) and ('#' not in line):
+           locVidDir=line
+        elif ("docVidDir" in line) and ('#' not in line):
+           docVidDir=line
+        elif ("numVids" in line) and ('#' not in line):
+           numVids=line
+        elif ("numFrames2Pick" in line) and ('#' not in line):
+           numFrame=line
+        elif ("bodyparts" in line) and ('#' not in line):
+           bodyparts=line
+       
+    for line in file:
+        if ("dockerContainer" in line) and ('#' not in line):
+           new=file.index(line)
+           if '$' not in file[new]:
+               outData[new]=dockerContainer
+        elif ("projName" in line) and ('#' not in line):
+           new=file.index(line)
+           if '$' not in file[new]:
+               outData[new]=projName        
+        elif ("experimenter" in line) and ('#' not in line):
+           new=file.index(line)
+           if '$' not in file[new]:
+               outData[new]=exp
+        elif ("dlc_directory" in line) and ('#' not in line):
+           new=file.index(line)
+           if '$' not in file[new]:
+               outData[new]=dlcDir
+        elif ("locVidDir" in line) and ('#' not in line):
+           new=file.index(line)
+           if '$' not in file[new]:
+               outData[new]=locVidDir
+        elif ("docVidDir" in line) and ('#' not in line):
+           new=file.index(line)
+           if '$' not in file[new]:
+               outData[new]=docVidDir
+        elif ("numVids" in line) and ('#' not in line):
+           new=file.index(line)
+           if '$' not in file[new]:
+               outData[new]=numVids
+        elif ("numFrames2Pick" in line) and ('#' not in line):
+           new=file.index(line)
+           if '$' not in file[new]:
+               outData[new]=numFrame
+        elif ("bodyparts" in line) and ('#' not in line):
+           new=file.index(line)
+           if '$' not in file[new]:
+               outData[new]=bodyparts
+    
+    for a in range(0,len(outData)):           
+        fileW.write("%s\n" % outData[a])
+        
+    fileW.close()
+               
+def main():
+    reWriteVars('/home/kkrista/testingPythonChangeVars.txt')
+    
+main()
