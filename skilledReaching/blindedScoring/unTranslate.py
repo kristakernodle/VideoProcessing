@@ -11,10 +11,10 @@ import os
 import shutil
 
 
-dir_blindscoring_base = 'X:/Neuro-Leventhal/data/mouseSkilledReaching/blindedScoring/'
-ugrads = {"Alli_B": "AB", "Alli_C": "AC"}
+dir_blindscoring_base = '/Volumes/SharedX/Neuro-Leventhal/data/mouseSkilledReaching/blindedScoring/'
+ugrads = {"Alli_B": "AB"}
 
-dir_allanimals = 'X:/Neuro-Leventhal/data/mouseSkilledReaching/'
+dir_allanimals = '/Volumes/SharedX/Neuro-Leventhal/data/mouseSkilledReaching/'
 unknown = []
 
 for key in ugrads.keys():
@@ -46,7 +46,7 @@ for key in ugrads.keys():
                 continue
             else:
                 origname = sf_origname.split('_')
-                shutil.move(os.path.join(ugrad_untranslated_dir, sf), os.path.join(ugrad_base_dir, 'unTranslated_' + ugrads[key]))
+                shutil.copy(os.path.join(ugrad_untranslated_dir, sf), os.path.join(ugrad_base_dir, 'unTranslated_' + ugrads[key]))
         except KeyError:
             unknown.append(sf)
             continue
