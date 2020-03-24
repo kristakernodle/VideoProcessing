@@ -71,3 +71,25 @@ for scored_file in csv_files_scored:
 # %%
 
 files_scored_by_everyone = [elt for elt in scored_files_dict.keys() if len(scored_files_dict[elt]) == 3]
+
+# %%
+
+for file in files_scored_by_everyone:
+
+    # Open each of the csv files associated with this video
+    trainingday_dir = '/'.join(file.split('/')[:-1])
+    fileID = file.split('/')[-1]
+
+    these_csv_files = []
+    for training_file in os.listdir(trainingday_dir):
+        if training_file == fileID + '.csv':
+            continue
+        if training_file.startswith(fileID) and training_file.endswith('.csv'):
+            these_csv_files.append(training_file)
+
+    for scored_csv in these_csv_files:
+        full_path_scored_csv = trainingday_dir + '/' + scored_csv
+        with open(full_path_scored_csv) as F:
+
+
+

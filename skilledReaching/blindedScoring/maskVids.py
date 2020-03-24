@@ -8,7 +8,7 @@ Created on Sun Sep  8 10:32:33 2019
 import os
 import csv
 import shutil
-from randFileGen import randFilenameGen
+from functions_blindedScoring import randFilenameGen
 
 animalDir = '/Volumes/SharedX/Neuro-Leventhal/data/mouseSkilledReaching/'
 
