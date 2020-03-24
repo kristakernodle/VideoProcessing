@@ -1,0 +1,115 @@
+# DlcCreate.txt
+# DeepLabCut Create New Project Workflow
+#
+# Define Variables (automatic)
+dockerContainer="TestingVariables"
+projName="rightPP_Right"
+experimenter="Krista"
+dlc_directory="/home/kkrista/Documents/"
+locVidDir="/media/kkrista/KRISTAEHD/DLCSR/rightPaw/"
+numVids=10
+numFrames2Pick=20
+bodyparts=leftPaw,rightPaw,nose,pellet
+#
+################################################################################
+#
+# Create back up of current copy of script
+while true; do
+    read -p "Do you want to back up this script [Y/n]? : " yn
+    case $yn in
+        [Y]* ) cp -r /home/kkrista/Documents/Script /home/kkrista/Documents/BackUp/; 
+               break;;
+        [n]* ) printf "\nYour script will not be backed up.\n\n"; 
+               break;;
+        * ) echo "Please answer yes [Y] or no [n].";;
+    esac
+done
+#
+################################################################################
+#
+cat /home/kkrista/Documents/Script/dlcVar.txt
+while true; do
+    read -p "Are these the correct variables? [Y/n]? : " yn
+    case $yn in
+        [Y]* ) /home/kkrista/Documents/Script/PythonScripts/changeVarsTXT.py; 
+               printf "\nSuccessfully updated variables.\n\n"; 
+               break;;
+        [n]* ) printf "\nPlease update the variables file then try again.\n\n"; 
+               break;;
+        * ) echo "Please answer yes [Y] or no [n].";;
+    esac
+done
+#
+################################################################################
+#
+# Create New Project
+#
+printf "\n A new project is being created (entering Docker container now):\n\n"
+# Access the docker container and create a new project:
+docker start $dockerContainer
+docker exec --user $USER -it $dockerContainer sh -c "/home/kkrista/Documents/Script/DockerScripts/dlcCreateProj.txt"
+#
+################################################################################
+#
+# Copy newly created project into BackUp folder
+#
+working_directory="$(python3 -c \
+'import os;
+allFiles=os.listdir("/home/kkrista/Documents/");
+for line in allFiles:
+	if ("'$projName'" in line) and ("'$experimenter'" in line):
+		working_directory=line;')"
+cp -r $working_directory /home/kkrista/Documents/BackUp/
+cp /home/kkrista/Documents/Script/dlcVar.txt $working_directory/
+#
+################################################################################
+#
+# Generate list of training videos
+#
+cd /home/kkrista/Documents/Script/PythonScripts/
+python3 -c \
+'from setDLCFunc import randVidSel;
+randVidSel("'$locVidDir'",'$numVids',"'$working_directory'")'
+#
+################################################################################
+#
+while true; do
+    read -p "Do you have time to generate the crop parameters for all videos now [Y/n]? : " yn
+    case $yn in
+        [Y]* ) cp -r /home/kkrista/Documents/Script /home/kkrista/Documents/BackUp/; 
+               break;;
+        [n]* ) printf "\nYou must do this before you train videos.\n\n"; 
+               break;;
+        * ) echo "Please answer yes [Y] or no [n].";;
+    esac
+done
+# Run the dlcCropParam.txt file in order to generate all crop parameters for videos in project
+/home/kkrista/Documents/Script/CommandScripts/dlcCropParam.txt
+
+python3 -c 'print("Finished creating cropping parameters")'
+
+# Edit the config.yaml associated with the DLC project to add the bodyparts
+python3 -c \
+'import setDLCFunc;
+setDLCFunc.configEdit("'$working_directory'","bodyParts","'$bodyparts'","'$numFrames2Pick'")'
+
+bodyparts=leftPaw,rightPaw,nose,pellet
+
+# Add training videos to DLC file
+docker exec --user $USER -it $dockerContainer sh -c "/home/kkrista/Documents/Script/DockerScripts/dlcAddNewVideos.txt"
+
+python3 -c 'print("Finished adding videos to DLC")'
+
+# Edit the config.yaml associated with the DLC project to add the crop parameters for the training set
+python -c \
+'import setDLCFunc;
+setDLCFunc.configEdit("'$working_directory'","trainingSet","'$bodyparts'","'$numFrames2Pick'")'
+
+python3 -c 'print("Finished editing config with crop params")'
+
+# Extract the frames for labeling
+docker exec --user $USER -it $dockerContainer sh -c "/home/kkrista/Documents/Script/DockerScripts/dlcExtractFrames.txt"
+
+python3 -c 'print("Finished extracting frames for labeling")'
+
+

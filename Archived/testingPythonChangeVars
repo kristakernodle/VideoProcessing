@@ -1,0 +1,94 @@
+# DlcCreate.txt
+# DeepLabCut Create New Project Workflow
+#
+################################################################################
+#
+# Create back up of current copy of script
+while true; do
+    read -p "Do you want to back up this script [Y/n]? : " yn
+    case $yn in
+        [Y]* ) cp -r /home/kkrista/Documents/Script /home/kkrista/Documents/BackUp/; 
+               break;;
+        [n]* ) printf "\nYour script will not be backed up.\n\n"; 
+               break;;
+        * ) echo "Please answer yes [Y] or no [n].";;
+    esac
+done
+#
+################################################################################
+#
+cat /home/kkrista/Documents/Script/dlcVar.txt
+while true; do
+    read -p "Are these the correct variables? [Y/n]? : " yn
+    case $yn in
+        [Y]* ) /home/kkrista/Documents/Script/PythonScripts/changeVarsTXT.py; 
+               printf "\nSuccessfully updated variables.\n\n"; 
+               break;;
+        [n]* ) printf "\nPlease update the variables file then try again.\n\n"; 
+               break;;
+        * ) echo "Please answer yes [Y] or no [n].";;
+    esac
+done
+#
+# Variables
+dockerContainer="kkristacontainer"
+projName="rightPP_Right"
+experimenter="Krista"
+dlc_directory="/home/kkrista/Documents/"
+locVidDir="/media/kkrista/KRISTAEHD/DLCSR/rightPaw/"
+#docVidDir="/opt/usb/DLCSR/rightPaw/"
+numVids=10
+numFrames2Pick=20
+bodyparts=leftPaw,rightPaw,nose,pellet
+# Stop One Above
+
+# Script Variables
+#fileDate=$(date "+%Y-%m-%d")
+#working_directory="$dlc_directory$projName-$experimenter-$fileDate/"
+trainFcsv="$working_directory/trainFiles.csv"
+# Stop Writing Variables
+
+# Access the docker container and create a new project:
+docker start $dockerContainer
+docker exec --user $USER -it $dockerContainer sh -c "/home/kkrista/Documents/Script/DockerScripts/dlcCreateProj.txt"
+
+# Copy newly created project into BackUp folder
+cp -r $working_directory /home/kkrista/Documents/BackUp/
+cp /home/kkrista/Documents/Script/dlcVar.txt $working_directory/
+
+# Generate list of training videos
+cd /home/kkrista/Documents/Script/PythonScripts/
+python3 -c \
+'from setDLCFunc import randVidSel;
+randVidSel("'$locVidDir'",'$numVids',"'$working_directory'")'
+
+# Run the dlcCropParam.txt file in order to generate all crop parameters for videos in project
+/home/kkrista/Documents/Script/CommandScripts/dlcCropParam.txt
+
+python3 -c 'print("Finished creating cropping parameters")'
+
+# Edit the config.yaml associated with the DLC project to add the bodyparts
+python3 -c \
+'import setDLCFunc;
+setDLCFunc.configEdit("'$working_directory'","bodyParts","'$bodyparts'","'$numFrames2Pick'")'
+
+python3 -c 'print("Finished editing bodyparts")'
+
+# Add training videos to DLC file
+docker exec --user $USER -it $dockerContainer sh -c "/home/kkrista/Documents/Script/DockerScripts/dlcAddNewVideos.txt"
+
+python3 -c 'print("Finished adding videos to DLC")'
+
+# Edit the config.yaml associated with the DLC project to add the crop parameters for the training set
+python -c \
+'import setDLCFunc;
+setDLCFunc.configEdit("'$working_directory'","trainingSet","'$bodyparts'","'$numFrames2Pick'")'
+
+python3 -c 'print("Finished editing config with crop params")'
+
+# Extract the frames for labeling
+docker exec --user $USER -it $dockerContainer sh -c "/home/kkrista/Documents/Script/DockerScripts/dlcExtractFrames.txt"
+
+python3 -c 'print("Finished extracting frames for labeling")'
+
+
