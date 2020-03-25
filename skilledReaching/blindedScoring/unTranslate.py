@@ -47,7 +47,7 @@ for key in ugrads.keys():
             else:
                 origname = sf_origname.split('_')
                 initials = ugrads[key]
-                shutil.move(os.path.join(ugrad_untranslated_dir, sf), os.path.join(ugrad_base_dir, 'unTranslated_' + initials))
+                shutil.move(os.path.join(ugrad_scored_dir, sf), os.path.join(ugrad_untranslated_dir, savename))
         except KeyError:
             unknown.append(sf)
             continue
