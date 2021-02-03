@@ -48,15 +48,15 @@ def isFirstFrame(frameNum,cap,secs,firstFrame):
     
     testFrame = np.floor(frameNum - (60*secs))
     value = LED(cap,testFrame)
-    
-    if value > 5000 and secs == 5:
+    value_thresh = 9000
+    if value > value_thresh and secs == 5:
         secs = 5
         frameNum = testFrame
-    elif value > 5000 and secs < 5:
+    elif value > value_thresh and secs < 5:
         frameNum = testFrame
-    elif value <= 5000 and secs > 0.059:
+    elif value <= value_thresh and secs > 0.059:
         secs = 0.5*secs
-    elif value <= 5000 and secs <= 0.059:
+    elif value <= value_thresh and secs <= 0.059:
         firstFrame = True
     else:
         print('something odd is happening')
@@ -85,12 +85,11 @@ def LEDDetection(currDayDir,vid):
     frameNum=0
     
     vidFrames=[]
-    
+    value_thresh = 9000
     while(frameNum < frameCnt):
-            
         value = LED(cap,frameNum)
 
-        if value > 5000:
+        if value > value_thresh:
             # If the LED is on:
             # Algorithm to test if we have the first frame
             
